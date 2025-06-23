@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
-    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+    <head><script src="/blog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=blog/livereload" data-no-instant defer></script><meta charset='utf-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Challenge: login – MaltaCTF 2025\rThis was a heap challenge with a subtle bug in a snprintf() call that allows a heap-based null byte overwrite, giving us a path to become the admin and read the flag.\nOverview\rThe binary simulates a simple multi-user system with features to:\nCreate and delete users View and select a current user Log in as the admin user to get the flag Only the user with UID 0 (i.e. the admin) can access the flag.\n">
 <title>MaltaCTF 2025 - Login</title>
 
-<link rel='canonical' href='http://localhost:1313/post/malta-2025-login/'>
+<link rel='canonical' href='http://localhost:1313/blog/post/malta-2025-login/'>
 
-<link rel="stylesheet" href="/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="MaltaCTF 2025 - Login">
+<link rel="stylesheet" href="/blog/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="MaltaCTF 2025 - Login">
 <meta property='og:description' content="Challenge: login – MaltaCTF 2025\rThis was a heap challenge with a subtle bug in a snprintf() call that allows a heap-based null byte overwrite, giving us a path to become the admin and read the flag.\nOverview\rThe binary simulates a simple multi-user system with features to:\nCreate and delete users View and select a current user Log in as the admin user to get the flag Only the user with UID 0 (i.e. the admin) can access the flag.\n">
-<meta property='og:url' content='http://localhost:1313/post/malta-2025-login/'>
+<meta property='og:url' content='http://localhost:1313/blog/post/malta-2025-login/'>
 <meta property='og:site_name' content='Velobobo&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='heap' /><meta property='article:tag' content='ctf' /><meta property='article:published_time' content='2025-06-22T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-06-22T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="MaltaCTF 2025 - Login">
@@ -52,13 +52,13 @@
         
             
             <figure class="site-avatar">
-                <a href="/">
+                <a href="/blog/">
                 
                     
                     
                     
                         
-                        <img src="/avatar_hu_d31f3887c3eab1b2.png" width="300"
+                        <img src="/blog/avatar_hu_d31f3887c3eab1b2.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -71,7 +71,7 @@
         
         
         <div class="site-meta">
-            <h1 class="site-name"><a href="/">Velobobo&#39;s Blog</a></h1>
+            <h1 class="site-name"><a href="/blog">Velobobo&#39;s Blog</a></h1>
             <h2 class="site-description">Cybersecurity Enthusiast | Pwn</h2>
         </div>
     </header><ol class="menu-social">
@@ -101,7 +101,7 @@
         
         
         <li >
-            <a href='/' >
+            <a href='/blog/' >
                 
                 
                 
@@ -121,7 +121,7 @@
         
         
         <li >
-            <a href='/about/' >
+            <a href='/blog/about/' >
                 
                 
                 
@@ -140,7 +140,7 @@
         
         
         <li >
-            <a href='/ctfs/' >
+            <a href='/blog/ctfs/' >
                 
                 
                 
@@ -152,7 +152,7 @@
         
         
         <li >
-            <a href='/archives/' >
+            <a href='/blog/archives/' >
                 
                 
                 
@@ -172,7 +172,7 @@
         
         
         <li >
-            <a href='/search/' >
+            <a href='/blog/search/' >
                 
                 
                 
@@ -265,7 +265,7 @@
     
     <header class="article-category">
         
-            <a href="/categories/pwn/" style="background-color: #2a9d8f; color: #fff;">
+            <a href="/blog/categories/pwn/" style="background-color: #2a9d8f; color: #fff;">
                 pwn
             </a>
         
@@ -274,7 +274,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/post/malta-2025-login/">MaltaCTF 2025 - Login</a>
+            <a href="/blog/post/malta-2025-login/">MaltaCTF 2025 - Login</a>
         </h2>
     
         
@@ -908,11 +908,11 @@ To place chunks adjacently, we:</p>
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="result">Result
-</h2><p><figure><img src="/post/malta-2025-login/result.png"
+</h2><p><figure><img src="/blog/post/malta-2025-login/result.png"
     alt="Script-Output" width="500">
 </figure>
 
-<figure><img src="/post/malta-2025-login/flag.png"
+<figure><img src="/blog/post/malta-2025-login/flag.png"
     alt="flag" width="500">
 </figure>
 </p>
@@ -924,9 +924,9 @@ To place chunks adjacently, we:</p>
     
     <section class="article-tags">
         
-            <a href="/tags/heap/">Heap</a>
+            <a href="/blog/tags/heap/">Heap</a>
         
-            <a href="/tags/ctf/">Ctf</a>
+            <a href="/blog/tags/ctf/">Ctf</a>
         
     </section>
 
@@ -1044,7 +1044,7 @@ To place chunks adjacently, we:</p>
                 src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
                 
                 >
-            </script><script type="text/javascript" src="/ts/main.b92c85ec552fbcf50c0ada705e7f70a3f51a8df1460f6a00119f4972ad7058a8.js" defer></script>
+            </script><script type="text/javascript" src="/blog/ts/main.b92c85ec552fbcf50c0ada705e7f70a3f51a8df1460f6a00119f4972ad7058a8.js" defer></script>
 <script>
     (function () {
         const customFont = document.createElement('link');

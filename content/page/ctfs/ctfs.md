@@ -1,8 +1,7 @@
 ---
 title: CTFs
-layout: "ctfs"
-date: 2025-06-22
 slug: ctfs
+url: /ctfs/
 menu:
   main:
     weight: -80
@@ -10,4 +9,4 @@ menu:
       icon: target
 ---
 
-Browse writeups grouped by CTF events.
+<!-- This page is only used to point to the taxonomy list at /ctfs/ -->
