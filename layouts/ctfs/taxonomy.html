@@ -1,0 +1,15 @@
+{{ define "main" }}
+<h1>CTFs Taxonomy</h1>
+<ul>
+  {{ range $ctfterm, $pages := site.Taxonomies.ctfs }}
+    <li>
+      <strong>{{ $ctfterm }} ({{ len $pages }})</strong>
+      <ul>
+        {{ range $pages.Pages }}
+          <li><a href="{{ .Permalink }}">{{ .Title }}</a></li>
+        {{ end }}
+      </ul>
+    </li>
+  {{ end }}
+</ul>
+{{ end }}

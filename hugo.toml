@@ -1,0 +1,90 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = "Velobobo's Blog"
+theme = 'hugo-theme-stack'
+
+[permalinks]
+post = "/post/:slug/"
+page = "/:slug/"
+
+[Params]
+favicon = "/avatar-favicon.png"
+mainSections = [ "post" ]
+
+[Params.sidebar]
+compact = false
+emoji = "🔒"
+subtitle = "Cybersecurity Enthusiast | Pwn"
+
+[Params.sidebar.avatar]
+enabled = true
+src = "avatar.png"
+local = true
+
+[Params.Article]
+readingTime = true
+
+[Params.widgets]
+
+# Right sidebar on homepage
+homepage = [
+  { type = "search" },
+  { type = "categories", params = { limit = 6 } },
+  { type = "tag-cloud", params = { limit = 10 } },
+  { type = "archives", params = { limit = 5 } }
+]
+
+# Right sidebar on individual post pages
+page = [
+  { type = "toc" }
+]
+
+
+[menu]
+main = [ ]
+
+  [[menu.social]]
+  identifier = "github"
+  name = "GitHub"
+  url = "https://github.com/Velobobo"
+
+    [menu.social.params]
+    icon = "brand-github"
+
+
+[related]
+includeNewer = true
+threshold = 60
+toLower = false
+
+  [[related.indices]]
+  name = "tags"
+  weight = 100
+
+  [[related.indices]]
+  name = "categories"
+  weight = 200
+
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[markup.tableOfContents]
+endLevel = 4
+ordered = true
+startLevel = 2
+
+[markup.highlight]
+noClasses = false
+codeFences = true
+guessSyntax = true
+lineNoStart = 1
+lineNos = true
+lineNumbersInTable = true
+tabWidth = 4
+
+
+[taxonomies]
+tag = "tags"
+category = "categories"
+ctf = "ctfs"
