@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Velobobo&#39;s Blog</title>
-        <link>https://velobobo.github.io/blog/</link>
+        <link>http://localhost:1313/blog/</link>
         <description>Recent content on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>About</title>
-        <link>https://velobobo.github.io/blog/about/</link>
+        <link>http://localhost:1313/blog/about/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/about/</guid>
+        <guid>http://localhost:1313/blog/about/</guid>
         <description>&lt;p&gt;👋 Hey, I’m Velobobo&lt;/p&gt;
 &lt;p&gt;I’m just starting out on my journey into binary exploitation, reverse engineering, and low-level systems. I find it really fun (and frustrating sometimes) to poke around at how things work under the surface.&lt;/p&gt;
 &lt;p&gt;This blog is mostly a place for me to post writeups, and walkthroughs from challenges or wargames I’ve tried — kind of like a learning log. I&amp;rsquo;m still figuring things out as I go, so don’t expect expert stuff — just honest attempts and what I’ve picked up along the way.
@@ -20,20 +20,11 @@ If you’re learning too, maybe something here will help or make you curious eno
 </description>
         </item>
         <item>
-        <title>CTFs</title>
-        <link>https://velobobo.github.io/blog/ctfs/</link>
-        <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
-        
-        <guid>https://velobobo.github.io/blog/ctfs/</guid>
-        <description>&lt;p&gt;Browse writeups grouped by CTF events.&lt;/p&gt;
-</description>
-        </item>
-        <item>
         <title>MaltaCTF 2025 - Login</title>
-        <link>https://velobobo.github.io/blog/post/malta-2025-login/</link>
+        <link>http://localhost:1313/blog/post/malta-2025-login/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/post/malta-2025-login/</guid>
+        <guid>http://localhost:1313/blog/post/malta-2025-login/</guid>
         <description>&lt;h1 id=&#34;challenge-login--maltactf-2025&#34;&gt;Challenge: login – MaltaCTF 2025
 &lt;/h1&gt;&lt;p&gt;This was a heap challenge with a subtle bug in a &lt;code&gt;snprintf()&lt;/code&gt; call that allows a &lt;strong&gt;heap-based null byte overwrite&lt;/strong&gt;, giving us a path to become the &lt;strong&gt;admin&lt;/strong&gt; and read the flag.&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview
@@ -616,11 +607,11 @@ To place chunks adjacently, we:&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/result.png&#34;
+&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/result.png&#34;
     alt=&#34;Script-Output&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
-&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/flag.png&#34;
+&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 &lt;/p&gt;
@@ -628,11 +619,11 @@ To place chunks adjacently, we:&lt;/p&gt;
         </item>
         <item>
         <title>Markdown Syntax Guide</title>
-        <link>https://velobobo.github.io/blog/post/markdown-syntax-guide/</link>
+        <link>http://localhost:1313/blog/post/markdown-syntax-guide/</link>
         <pubDate>Sat, 21 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/post/markdown-syntax-guide/</guid>
-        <description>&lt;img src="https://velobobo.github.io/blog/post/markdown-syntax-guide/pawel-czerwinski-8uZPynIu-rQ-unsplash.jpg" alt="Featured image of post Markdown Syntax Guide" /&gt;&lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p&gt;
+        <guid>http://localhost:1313/blog/post/markdown-syntax-guide/</guid>
+        <description>&lt;img src="http://localhost:1313/blog/post/markdown-syntax-guide/pawel-czerwinski-8uZPynIu-rQ-unsplash.jpg" alt="Featured image of post Markdown Syntax Guide" /&gt;&lt;p&gt;This article offers a sample of basic Markdown syntax that can be used in Hugo content files, also it shows whether basic HTML elements are decorated with CSS in a Hugo theme.&lt;/p&gt;
 &lt;h2 id=&#34;headings&#34;&gt;Headings
 &lt;/h2&gt;&lt;p&gt;The following HTML &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt;—&lt;code&gt;&amp;lt;h6&amp;gt;&lt;/code&gt; elements represent six levels of section headings. &lt;code&gt;&amp;lt;h1&amp;gt;&lt;/code&gt; is the highest section level while &lt;code&gt;&amp;lt;h6&amp;gt;&lt;/code&gt; is the lowest.&lt;/p&gt;
 &lt;h1 id=&#34;h1&#34;&gt;H1
@@ -856,18 +847,26 @@ To place chunks adjacently, we:&lt;/p&gt;
         </item>
         <item>
         <title>Archives</title>
-        <link>https://velobobo.github.io/blog/archives/</link>
+        <link>http://localhost:1313/blog/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/archives/</guid>
+        <guid>http://localhost:1313/blog/archives/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>CTFs</title>
+        <link>http://localhost:1313/blog/ctfs/</link>
+        <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/blog/ctfs/</guid>
         <description></description>
         </item>
         <item>
         <title>Search</title>
-        <link>https://velobobo.github.io/blog/search/</link>
+        <link>http://localhost:1313/blog/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/search/</guid>
+        <guid>http://localhost:1313/blog/search/</guid>
         <description></description>
         </item>
         
