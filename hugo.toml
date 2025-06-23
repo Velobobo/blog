@@ -84,7 +84,7 @@ lineNumbersInTable = true
 tabWidth = 4
 
 
-[colorScheme]
+[Params.colorScheme]
 toggle = true
 default = "light"
 
