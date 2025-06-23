@@ -84,6 +84,10 @@ lineNumbersInTable = true
 tabWidth = 4
 
 
+[colorScheme]
+toggle = true
+default = "light"
+
 [taxonomies]
 tag = "tags"
 category = "categories"

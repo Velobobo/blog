@@ -2,50 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/blog/</loc>
+    <loc>https://velobobo.github.io/blog/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/about/</loc>
+    <loc>https://velobobo.github.io/blog/about/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/categories/</loc>
+    <loc>https://velobobo.github.io/blog/categories/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/tags/ctf/</loc>
+    <loc>https://velobobo.github.io/blog/tags/ctf/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/ctfs/</loc>
+    <loc>https://velobobo.github.io/blog/ctfs/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/tags/heap/</loc>
+    <loc>https://velobobo.github.io/blog/tags/heap/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/post/malta-2025-login/</loc>
+    <loc>https://velobobo.github.io/blog/post/malta-2025-login/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/ctfs/maltactf-2025/</loc>
+    <loc>https://velobobo.github.io/blog/ctfs/maltactf-2025/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/page/</loc>
+    <loc>https://velobobo.github.io/blog/page/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/post/</loc>
+    <loc>https://velobobo.github.io/blog/post/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/categories/pwn/</loc>
+    <loc>https://velobobo.github.io/blog/categories/pwn/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/tags/</loc>
+    <loc>https://velobobo.github.io/blog/tags/</loc>
     <lastmod>2025-06-22T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/post/markdown-syntax-guide/</loc>
+    <loc>https://velobobo.github.io/blog/post/markdown-syntax-guide/</loc>
     <lastmod>2025-06-21T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/archives/</loc>
+    <loc>https://velobobo.github.io/blog/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/ctfs/</loc>
+    <loc>https://velobobo.github.io/blog/ctfs/</loc>
   </url><url>
-    <loc>http://localhost:1313/blog/search/</loc>
+    <loc>https://velobobo.github.io/blog/search/</loc>
   </url>
 </urlset>
