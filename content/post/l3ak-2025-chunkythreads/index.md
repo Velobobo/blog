@@ -45,6 +45,7 @@ log.critical(f'Canary : {hex(canary)}')
 
 Then we use other thread to rop , but the binary had no `pop rdi` gadget , so we had to rop from libc but for that we had to get libcbase. I was stuck here but then i just examined in gdb where the `print` function was returning to , i thought it would return in the binary but it was returning to a libc address. I didn't try to find the reason but maybe cuz threads came into play??? So then i leaked this like the same way i leaked the canary and then calculated the offset of this leaked libc address from the libcbase and hardcoded this offset as it will not change. At last we just call `system(/bin/sh)` and put the sleep time less as we want this to exit before the other 2 threads execute stack_chk_fails
 
+Later found out that thread was started by `pthread_create` which is a libc function so the thread was returning inside this function after termination. thats why i saw print return to a libc address and not a binary address.
 
 ## Full exploit script  
 
@@ -96,3 +97,5 @@ p.interactive()
 
 ## Result  
 {{< figure src="flag.png" alt="flag" width="500" >}}
+
+Also i had to type cmds two times for it to execute on the shell , thats cuz now my input is shared by both the main process(which has 2 threads running) and also my newly exceeded shell.
