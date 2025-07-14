@@ -52,6 +52,7 @@ print
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Then we use other thread to rop , but the binary had no &lt;code&gt;pop rdi&lt;/code&gt; gadget , so we had to rop from libc but for that we had to get libcbase. I was stuck here but then i just examined in gdb where the &lt;code&gt;print&lt;/code&gt; function was returning to , i thought it would return in the binary but it was returning to a libc address. I didn&amp;rsquo;t try to find the reason but maybe cuz threads came into play??? So then i leaked this like the same way i leaked the canary and then calculated the offset of this leaked libc address from the libcbase and hardcoded this offset as it will not change. At last we just call &lt;code&gt;system(/bin/sh)&lt;/code&gt; and put the sleep time less as we want this to exit before the other 2 threads execute stack_chk_fails&lt;/p&gt;
+&lt;p&gt;Later found out that thread was started by &lt;code&gt;pthread_create&lt;/code&gt; which is a libc function so the thread was returning inside this function after termination. thats why i saw print return to a libc address and not a binary address.&lt;/p&gt;
 &lt;h2 id=&#34;full-exploit-script&#34;&gt;Full exploit script
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
@@ -150,6 +151,7 @@ print
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
+&lt;p&gt;Also i had to type cmds two times for it to execute on the shell , thats cuz now my input is shared by both the main process(which has 2 threads running) and also my newly exceeded shell.&lt;/p&gt;
 </description>
         </item>
         <item>
