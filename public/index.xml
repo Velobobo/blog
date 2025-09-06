@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Velobobo&#39;s Blog</title>
-        <link>http://localhost:1313/blog/</link>
+        <link>https://velobobo.github.io/blog/</link>
         <description>Recent content on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>NullConCTF 2025 - Fotispy6</title>
-        <link>http://localhost:1313/blog/post/nullcon-2025-chunkythreads/</link>
+        <link>https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/</link>
         <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/nullcon-2025-chunkythreads/</guid>
+        <guid>https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/</guid>
         <description>&lt;h1 id=&#34;fotispy6--nullcon-ctf-2025&#34;&gt;Fotispy6 – Nullcon CTF 2025
 &lt;/h1&gt;&lt;h2 id=&#34;overview&#34;&gt;Overview
 &lt;/h2&gt;&lt;p&gt;This binary was a classic heap-based program where we could add multiple songs and comments, as well as view and delete them.
@@ -19,27 +19,27 @@ Protections enabled were: PIE, Canary, NX, and Full RELRO.
 Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and __free_hook function was also present in this libc.&lt;/p&gt;
 &lt;h2 id=&#34;reversed-code&#34;&gt;Reversed Code
 &lt;/h2&gt;&lt;p&gt;main
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/main.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/main.png&#34;
      alt=&#34;main&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;add
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/add.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/add.png&#34;
      alt=&#34;add&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;edit
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/edit.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/edit.png&#34;
      alt=&#34;edit&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;view
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/view.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/view.png&#34;
      alt=&#34;view&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;delete
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/free.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/free.png&#34;
      alt=&#34;free&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
@@ -264,7 +264,7 @@ Initially, I spent quite some time trying to figure out the exploitation strateg
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/flag.png&#34;
+&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
@@ -272,26 +272,26 @@ Initially, I spent quite some time trying to figure out the exploitation strateg
         </item>
         <item>
         <title>L3AKCTF 2025 - ChunkyThreads</title>
-        <link>http://localhost:1313/blog/post/l3ak-2025-chunkythreads/</link>
+        <link>https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/</link>
         <pubDate>Sat, 12 Jul 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/l3ak-2025-chunkythreads/</guid>
+        <guid>https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/</guid>
         <description>&lt;h1 id=&#34;chunkythreads--l3akctf-2025&#34;&gt;ChunkyThreads – l3akCTF 2025
 &lt;/h1&gt;&lt;h2 id=&#34;overview&#34;&gt;Overview
 &lt;/h2&gt;&lt;p&gt;This binary has no pie but all other protections. it uses different threads to print out data , first we have to set the max number of threads by &lt;code&gt;CHUNKS &amp;lt;num&amp;gt;&lt;/code&gt; threads can be upto 10. then we can enter a cmd like &lt;code&gt;CHUNK &amp;lt;sleep_time&amp;gt; &amp;lt;repeat&amp;gt; &amp;lt;data&amp;gt;&lt;/code&gt; which uses a thread to print out data and then wait for sleep_time and print again till the data is printed &lt;code&gt;&amp;lt;repeat&amp;gt;&lt;/code&gt; times. The data is stored in a buffer on stack and can be of any length.&lt;/p&gt;
 &lt;h2 id=&#34;reversed-code&#34;&gt;Reversed code
 &lt;/h2&gt;&lt;p&gt;main
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-chunkythreads/main.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/main.png&#34;
      alt=&#34;main&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 
 parsecmd
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-chunkythreads/parsecmd.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/parsecmd.png&#34;
      alt=&#34;parsecmd&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 
 print
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-chunkythreads/print.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/print.png&#34;
      alt=&#34;print&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
@@ -411,7 +411,7 @@ print
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-chunkythreads/flag.png&#34;
+&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-chunkythreads/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
@@ -420,10 +420,10 @@ print
         </item>
         <item>
         <title>L3AKCTF 2025 - SafeGets</title>
-        <link>http://localhost:1313/blog/post/l3ak-2025-safegets/</link>
+        <link>https://velobobo.github.io/blog/post/l3ak-2025-safegets/</link>
         <pubDate>Sat, 12 Jul 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/l3ak-2025-safegets/</guid>
+        <guid>https://velobobo.github.io/blog/post/l3ak-2025-safegets/</guid>
         <description>&lt;h1 id=&#34;safegets--l3akctf-2025&#34;&gt;SafeGets – l3akCTF 2025
 &lt;/h1&gt;&lt;h2 id=&#34;overview&#34;&gt;Overview
 &lt;/h2&gt;&lt;p&gt;The original binary was rather simple using &lt;code&gt;gets()&lt;/code&gt; to read data into buffer and then printing the reversed string of buffer via puts , it had a win  function too. it had no canary , no pie , nx on . so it was clear what we needed to do . but there was a wrapper.py which was first checking if our input is less than 255 bytes and then only executing the binary with out input.&lt;/p&gt;
@@ -525,7 +525,7 @@ print
 &lt;/div&gt;&lt;h2 id=&#34;exploitation-plan&#34;&gt;Exploitation Plan
 &lt;/h2&gt;&lt;p&gt;If we don&amp;rsquo;t consider wrapper.py then it was just buffer overflow and overwriting the return address to the win function. And also to bypass the reversing of our payload we can just add a null byte in front of our payload as strlen just checks the input till null byte and with this the reversing will not happen as it will think the len is 0 , and this input is also read with &lt;code&gt;read()&lt;/code&gt; so it will continue to read even if it encounters a null byte. But the offset to the return address was more than 255 bytes , so wee somehow had to bypass wrapper.py&lt;br&gt;
 so after a bit of searching i found out python&amp;rsquo;s len treats emojis, Chinese characters etc which are in utf-8 encoding as 1 but in actual bytes they can reach many bytes.&lt;/p&gt;
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-safegets/emoji.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-safegets/emoji.png&#34;
     alt=&#34;emoji-bytes&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
@@ -564,7 +564,7 @@ so after a bit of searching i found out python&amp;rsquo;s len treats emojis, Ch
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/l3ak-2025-safegets/flag.png&#34;
+&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/l3ak-2025-safegets/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
@@ -572,10 +572,10 @@ so after a bit of searching i found out python&amp;rsquo;s len treats emojis, Ch
         </item>
         <item>
         <title>About</title>
-        <link>http://localhost:1313/blog/about/</link>
+        <link>https://velobobo.github.io/blog/about/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/about/</guid>
+        <guid>https://velobobo.github.io/blog/about/</guid>
         <description>&lt;p&gt;👋 Hey, I’m Velobobo&lt;/p&gt;
 &lt;p&gt;I’m just starting out on my journey into binary exploitation, reverse engineering, and low-level systems. I find it really fun (and frustrating sometimes) to poke around at how things work under the surface.&lt;/p&gt;
 &lt;p&gt;This blog is mostly a place for me to post writeups, and walkthroughs from challenges or wargames I’ve tried — kind of like a learning log. I&amp;rsquo;m still figuring things out as I go, so don’t expect expert stuff — just honest attempts and what I’ve picked up along the way.
@@ -585,10 +585,10 @@ If you’re learning too, maybe something here will help or make you curious eno
         </item>
         <item>
         <title>MaltaCTF 2025 - Login</title>
-        <link>http://localhost:1313/blog/post/malta-2025-login/</link>
+        <link>https://velobobo.github.io/blog/post/malta-2025-login/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/malta-2025-login/</guid>
+        <guid>https://velobobo.github.io/blog/post/malta-2025-login/</guid>
         <description>&lt;h1 id=&#34;challenge-login--maltactf-2025&#34;&gt;Challenge: login – MaltaCTF 2025
 &lt;/h1&gt;&lt;p&gt;This was a heap challenge with a subtle bug in a &lt;code&gt;snprintf()&lt;/code&gt; call that allows a &lt;strong&gt;heap-based null byte overwrite&lt;/strong&gt;, giving us a path to become the &lt;strong&gt;admin&lt;/strong&gt; and read the flag.&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview
@@ -1171,11 +1171,11 @@ To place chunks adjacently, we:&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/result.png&#34;
+&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/result.png&#34;
     alt=&#34;Script-Output&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/flag.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 &lt;/p&gt;
@@ -1183,26 +1183,26 @@ To place chunks adjacently, we:&lt;/p&gt;
         </item>
         <item>
         <title>Archives</title>
-        <link>http://localhost:1313/blog/archives/</link>
+        <link>https://velobobo.github.io/blog/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/archives/</guid>
+        <guid>https://velobobo.github.io/blog/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>CTFs</title>
-        <link>http://localhost:1313/blog/ctfs/</link>
+        <link>https://velobobo.github.io/blog/ctfs/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/ctfs/</guid>
+        <guid>https://velobobo.github.io/blog/ctfs/</guid>
         <description></description>
         </item>
         <item>
         <title>Search</title>
-        <link>http://localhost:1313/blog/search/</link>
+        <link>https://velobobo.github.io/blog/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/search/</guid>
+        <guid>https://velobobo.github.io/blog/search/</guid>
         <description></description>
         </item>
         

@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Heap on Velobobo&#39;s Blog</title>
-        <link>http://localhost:1313/blog/tags/heap/</link>
+        <link>https://velobobo.github.io/blog/tags/heap/</link>
         <description>Recent content in Heap on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/blog/tags/heap/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/tags/heap/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>NullConCTF 2025 - Fotispy6</title>
-        <link>http://localhost:1313/blog/post/nullcon-2025-chunkythreads/</link>
+        <link>https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/</link>
         <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/nullcon-2025-chunkythreads/</guid>
+        <guid>https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/</guid>
         <description>&lt;h1 id=&#34;fotispy6--nullcon-ctf-2025&#34;&gt;Fotispy6 – Nullcon CTF 2025
 &lt;/h1&gt;&lt;h2 id=&#34;overview&#34;&gt;Overview
 &lt;/h2&gt;&lt;p&gt;This binary was a classic heap-based program where we could add multiple songs and comments, as well as view and delete them.
@@ -19,33 +19,28 @@ Protections enabled were: PIE, Canary, NX, and Full RELRO.
 Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and __free_hook function was also present in this libc.&lt;/p&gt;
 &lt;h2 id=&#34;reversed-code&#34;&gt;Reversed Code
 &lt;/h2&gt;&lt;p&gt;main
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/main.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/main.png&#34;
      alt=&#34;main&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
-&lt;p&gt;create
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/create.png&#34;
-     alt=&#34;create&#34; width=&#34;500&#34;&gt;
- &lt;/figure&gt;
-&lt;/p&gt;
 &lt;p&gt;add
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/add.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/add.png&#34;
      alt=&#34;add&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;edit
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/edit.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/edit.png&#34;
      alt=&#34;edit&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;view
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/view.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/view.png&#34;
      alt=&#34;view&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;p&gt;delete
-&lt;figure&gt;&lt;img src=&#34;delete.png&#34;
-     alt=&#34;delete&#34; width=&#34;500&#34;&gt;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/free.png&#34;
+     alt=&#34;free&#34; width=&#34;500&#34;&gt;
  &lt;/figure&gt;
 &lt;/p&gt;
 &lt;h2 id=&#34;exploitation-plan&#34;&gt;Exploitation Plan
@@ -269,7 +264,7 @@ Initially, I spent quite some time trying to figure out the exploitation strateg
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/nullcon-2025-chunkythreads/flag.png&#34;
+&lt;/h2&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
@@ -277,10 +272,10 @@ Initially, I spent quite some time trying to figure out the exploitation strateg
         </item>
         <item>
         <title>MaltaCTF 2025 - Login</title>
-        <link>http://localhost:1313/blog/post/malta-2025-login/</link>
+        <link>https://velobobo.github.io/blog/post/malta-2025-login/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/post/malta-2025-login/</guid>
+        <guid>https://velobobo.github.io/blog/post/malta-2025-login/</guid>
         <description>&lt;h1 id=&#34;challenge-login--maltactf-2025&#34;&gt;Challenge: login – MaltaCTF 2025
 &lt;/h1&gt;&lt;p&gt;This was a heap challenge with a subtle bug in a &lt;code&gt;snprintf()&lt;/code&gt; call that allows a &lt;strong&gt;heap-based null byte overwrite&lt;/strong&gt;, giving us a path to become the &lt;strong&gt;admin&lt;/strong&gt; and read the flag.&lt;/p&gt;
 &lt;h2 id=&#34;overview&#34;&gt;Overview
@@ -863,11 +858,11 @@ To place chunks adjacently, we:&lt;/p&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;result&#34;&gt;Result
-&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/result.png&#34;
+&lt;/h2&gt;&lt;p&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/result.png&#34;
     alt=&#34;Script-Output&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 
-&lt;figure&gt;&lt;img src=&#34;http://localhost:1313/blog/post/malta-2025-login/flag.png&#34;
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/malta-2025-login/flag.png&#34;
     alt=&#34;flag&#34; width=&#34;500&#34;&gt;
 &lt;/figure&gt;
 &lt;/p&gt;

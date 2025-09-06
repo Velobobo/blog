@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Pages on Velobobo&#39;s Blog</title>
-        <link>http://localhost:1313/blog/page/</link>
+        <link>https://velobobo.github.io/blog/page/</link>
         <description>Recent content in Pages on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/blog/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>About</title>
-        <link>http://localhost:1313/blog/about/</link>
+        <link>https://velobobo.github.io/blog/about/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/about/</guid>
+        <guid>https://velobobo.github.io/blog/about/</guid>
         <description>&lt;p&gt;👋 Hey, I’m Velobobo&lt;/p&gt;
 &lt;p&gt;I’m just starting out on my journey into binary exploitation, reverse engineering, and low-level systems. I find it really fun (and frustrating sometimes) to poke around at how things work under the surface.&lt;/p&gt;
 &lt;p&gt;This blog is mostly a place for me to post writeups, and walkthroughs from challenges or wargames I’ve tried — kind of like a learning log. I&amp;rsquo;m still figuring things out as I go, so don’t expect expert stuff — just honest attempts and what I’ve picked up along the way.
@@ -21,26 +21,26 @@ If you’re learning too, maybe something here will help or make you curious eno
         </item>
         <item>
         <title>Archives</title>
-        <link>http://localhost:1313/blog/archives/</link>
+        <link>https://velobobo.github.io/blog/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/archives/</guid>
+        <guid>https://velobobo.github.io/blog/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>CTFs</title>
-        <link>http://localhost:1313/blog/ctfs/</link>
+        <link>https://velobobo.github.io/blog/ctfs/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/ctfs/</guid>
+        <guid>https://velobobo.github.io/blog/ctfs/</guid>
         <description></description>
         </item>
         <item>
         <title>Search</title>
-        <link>http://localhost:1313/blog/search/</link>
+        <link>https://velobobo.github.io/blog/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/blog/search/</guid>
+        <guid>https://velobobo.github.io/blog/search/</guid>
         <description></description>
         </item>
         

