@@ -397,6 +397,10 @@ when size==capacity , then at the next <code>vec.push_back()</code> , it allocat
     alt="gdb3" width="800">
 </figure>
 
+<figure><img src="/blog/post/byu-2026-heap2win/gdb4.png"
+    alt="gdb4" width="800">
+</figure>
+
 <p>Due to tcache reuse by malloc on the freed chunk of vector the 3rd custombtn gets allocated before the 2nd custom btn in the memory and we can overflow the name buffer of the 3rd chunk and overwrite the vptr of the 2nd chunk with the vptr of the Winning_btn class, so that when we call push() from the #2 custom btn we will get the shell.</p>
 <p>From ghidra/objdump we get <code>Winningbtn_vptr: 0x403640</code></p>
 <h2 id="exploit-script">Exploit script
