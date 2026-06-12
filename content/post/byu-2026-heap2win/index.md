@@ -36,7 +36,7 @@ This binary has 3 classes - hype button , custom button and winner button and al
 
 the vuln is inside the custom button where we can overflow name buffer
 
-{{< figure src="vuln1.png" alt="vuln" width="500" >}}
+{{< figure src="vuln1.png" alt="vuln" width="800" >}}
 
 the idea is clear we have to overwrite the `vptr(virtual pointer)` of a btn with the vptr of the winning btn. 
 
@@ -56,7 +56,7 @@ The memory layout of a vtable of a Class is like this
 ..
 ```
 
-`offset-to-top` is used adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.  
+`offset-to-top` is used to adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.  
 `RTTI` (Run-Time Type Information) points to a section which helps the program know about the type of the object
 
 ```python {linenos=false}
@@ -127,4 +127,4 @@ p.send(b'2\n2\n')
 p.interactive()
 ```
 
-
+{{< figure src="flag.png" alt="flag" width="800" >}}
