@@ -100,6 +100,8 @@ Gdb outputs of heap chunks when i sequentially make new CustomBtns
 
 {{< figure src="gdb3.png" alt="gdb3" width="800" >}}
 
+{{< figure src="gdb4.png" alt="gdb4" width="800" >}}
+
 Due to tcache reuse by malloc on the freed chunk of vector the 3rd custombtn gets allocated before the 2nd custom btn in the memory and we can overflow the name buffer of the 3rd chunk and overwrite the vptr of the 2nd chunk with the vptr of the Winning_btn class, so that when we call push() from the #2 custom btn we will get the shell.
 
 From ghidra/objdump we get `Winningbtn_vptr: 0x403640` 
