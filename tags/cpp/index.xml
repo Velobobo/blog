@@ -30,7 +30,7 @@ you can see the source code of the binary from &lt;a class=&#34;link&#34; href=&
 &lt;/h2&gt;&lt;p&gt;This binary has 3 classes - hype button , custom button and winner button and all of these have a virtual function &lt;code&gt;push()&lt;/code&gt; which just prints text for hype,custom btn but calls &lt;code&gt;system(&amp;quot;/bin/sh&amp;quot;)&lt;/code&gt; for the winner btn. We are allowed to make hype,custom btns and push them normally but aren&amp;rsquo;t allowed to make a custom btn so we somehow have to call the push() function of the winnerbtn.&lt;/p&gt;
 &lt;p&gt;the vuln is inside the custom button where we can overflow name buffer&lt;/p&gt;
 &lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/byu-2026-heap2win/vuln1.png&#34;
-    alt=&#34;vuln&#34; width=&#34;500&#34;&gt;
+    alt=&#34;vuln&#34; width=&#34;800&#34;&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;the idea is clear we have to overwrite the &lt;code&gt;vptr(virtual pointer)&lt;/code&gt; of a btn with the vptr of the winning btn.&lt;/p&gt;
@@ -45,7 +45,7 @@ In cpp Classes are just like structs internally , when a &lt;code&gt;Class&lt;/c
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mh&#34;&gt;0x20&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Virtual&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;function&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;#2&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;..&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;..&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;offset-to-top&lt;/code&gt; is used adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.&lt;br&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;code&gt;offset-to-top&lt;/code&gt; is used to adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.&lt;br&gt;
 &lt;code&gt;RTTI&lt;/code&gt; (Run-Time Type Information) points to a section which helps the program know about the type of the object&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Class&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;+&lt;/span&gt;&lt;span class=&#34;mh&#34;&gt;0x0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vptr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;---&amp;gt;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;custombtn_vtable_functions_section&lt;/span&gt;
@@ -130,7 +130,11 @@ when size==capacity , then at the next &lt;code&gt;vec.push_back()&lt;/code&gt; 
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;interactive&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;</description>
+&lt;/div&gt;&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/byu-2026-heap2win/flag.png&#34;
+    alt=&#34;flag&#34; width=&#34;800&#34;&gt;
+&lt;/figure&gt;
+
+</description>
         </item>
         
     </channel>

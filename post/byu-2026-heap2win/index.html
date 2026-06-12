@@ -342,7 +342,7 @@ you can see the source code of the binary from <a class="link" href="https://git
 </h2><p>This binary has 3 classes - hype button , custom button and winner button and all of these have a virtual function <code>push()</code> which just prints text for hype,custom btn but calls <code>system(&quot;/bin/sh&quot;)</code> for the winner btn. We are allowed to make hype,custom btns and push them normally but aren&rsquo;t allowed to make a custom btn so we somehow have to call the push() function of the winnerbtn.</p>
 <p>the vuln is inside the custom button where we can overflow name buffer</p>
 <figure><img src="/blog/post/byu-2026-heap2win/vuln1.png"
-    alt="vuln" width="500">
+    alt="vuln" width="800">
 </figure>
 
 <p>the idea is clear we have to overwrite the <code>vptr(virtual pointer)</code> of a btn with the vptr of the winning btn.</p>
@@ -357,7 +357,7 @@ In cpp Classes are just like structs internally , when a <code>Class</code> has 
 </span></span><span class="line"><span class="cl"><span class="o">+</span><span class="mh">0x20</span><span class="p">:</span> <span class="n">Virtual</span> <span class="n">function</span> <span class="c1">#2</span>
 </span></span><span class="line"><span class="cl"><span class="o">..</span>
 </span></span><span class="line"><span class="cl"><span class="o">..</span>
-</span></span></code></pre></div><p><code>offset-to-top</code> is used adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.<br>
+</span></span></code></pre></div><p><code>offset-to-top</code> is used to adjust the pointer in case of multiple inheritances , in normal non-complex cases its value is usually 0.<br>
 <code>RTTI</code> (Run-Time Type Information) points to a section which helps the program know about the type of the object</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="p">[</span><span class="n">Class</span> <span class="n">Object</span><span class="p">]</span>
 </span></span><span class="line"><span class="cl"><span class="o">+</span><span class="mh">0x0</span><span class="p">:</span> <span class="n">vptr</span> <span class="o">---&gt;</span> <span class="n">custombtn_vtable_functions_section</span>
@@ -442,7 +442,11 @@ when size==capacity , then at the next <code>vec.push_back()</code> , it allocat
 </span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div>
+</div><figure><img src="/blog/post/byu-2026-heap2win/flag.png"
+    alt="flag" width="800">
+</figure>
+
+
 </section>
 
 
