@@ -4,7 +4,7 @@ title = "NullConCTF 2025 - Fotispy6"
 date = "2025-09-06"
 description = ""
 draft = false
-slug = "nullcon-2025-chunkythreads"
+slug = "nullcon-2025-fotispy6"
 ctfs = ["Nullcon-2025"]
 tags = [
     "heap",
