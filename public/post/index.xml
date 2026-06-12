@@ -85,6 +85,10 @@ when size==capacity , then at the next &lt;code&gt;vec.push_back()&lt;/code&gt; 
     alt=&#34;gdb3&#34; width=&#34;800&#34;&gt;
 &lt;/figure&gt;
 
+&lt;figure&gt;&lt;img src=&#34;https://velobobo.github.io/blog/post/byu-2026-heap2win/gdb4.png&#34;
+    alt=&#34;gdb4&#34; width=&#34;800&#34;&gt;
+&lt;/figure&gt;
+
 &lt;p&gt;Due to tcache reuse by malloc on the freed chunk of vector the 3rd custombtn gets allocated before the 2nd custom btn in the memory and we can overflow the name buffer of the 3rd chunk and overwrite the vptr of the 2nd chunk with the vptr of the Winning_btn class, so that when we call push() from the #2 custom btn we will get the shell.&lt;/p&gt;
 &lt;p&gt;From ghidra/objdump we get &lt;code&gt;Winningbtn_vptr: 0x403640&lt;/code&gt;&lt;/p&gt;
 &lt;h2 id=&#34;exploit-script&#34;&gt;Exploit script
