@@ -4,11 +4,11 @@
 <meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Fotispy6 – Nullcon CTF 2025\rOverview\rThis binary was a classic heap-based program where we could add multiple songs and comments, as well as view and delete them. Protections enabled were: PIE, Canary, NX, and Full RELRO. Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and __free_hook function was also present in this libc.\n">
 <title>NullConCTF 2025 - Fotispy6</title>
 
-<link rel='canonical' href='https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/'>
+<link rel='canonical' href='https://velobobo.github.io/blog/post/nullcon-2025-fotispy6/'>
 
 <link rel="stylesheet" href="/blog/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="NullConCTF 2025 - Fotispy6">
 <meta property='og:description' content="Fotispy6 – Nullcon CTF 2025\rOverview\rThis binary was a classic heap-based program where we could add multiple songs and comments, as well as view and delete them. Protections enabled were: PIE, Canary, NX, and Full RELRO. Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and __free_hook function was also present in this libc.\n">
-<meta property='og:url' content='https://velobobo.github.io/blog/post/nullcon-2025-chunkythreads/'>
+<meta property='og:url' content='https://velobobo.github.io/blog/post/nullcon-2025-fotispy6/'>
 <meta property='og:site_name' content='Velobobo&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='heap' /><meta property='article:tag' content='ctf' /><meta property='article:published_time' content='2025-09-06T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2025-09-06T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="NullConCTF 2025 - Fotispy6">
@@ -272,7 +272,7 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/blog/post/nullcon-2025-chunkythreads/">NullConCTF 2025 - Fotispy6</a>
+            <a href="/blog/post/nullcon-2025-fotispy6/">NullConCTF 2025 - Fotispy6</a>
         </h2>
     
         
@@ -331,27 +331,27 @@ Protections enabled were: PIE, Canary, NX, and Full RELRO.
 Initially, I spent quite some time trying to figure out the exploitation strategy. Then, I randomly checked the libc version and noticed it was 2.31 so there was no pointer mangling(safe linking) in tcache and <code>__free_hook</code> function was also present in this libc.</p>
 <h2 id="reversed-code">Reversed Code
 </h2><p>main
-<figure><img src="/blog/post/nullcon-2025-chunkythreads/main.png"
+<figure><img src="/blog/post/nullcon-2025-fotispy6/main.png"
      alt="main" width="500">
  </figure>
 </p>
 <p>add
-<figure><img src="/blog/post/nullcon-2025-chunkythreads/add.png"
+<figure><img src="/blog/post/nullcon-2025-fotispy6/add.png"
      alt="add" width="500">
  </figure>
 </p>
 <p>edit
-<figure><img src="/blog/post/nullcon-2025-chunkythreads/edit.png"
+<figure><img src="/blog/post/nullcon-2025-fotispy6/edit.png"
      alt="edit" width="500">
  </figure>
 </p>
 <p>view
-<figure><img src="/blog/post/nullcon-2025-chunkythreads/view.png"
+<figure><img src="/blog/post/nullcon-2025-fotispy6/view.png"
      alt="view" width="500">
  </figure>
 </p>
 <p>delete
-<figure><img src="/blog/post/nullcon-2025-chunkythreads/free.png"
+<figure><img src="/blog/post/nullcon-2025-fotispy6/free.png"
      alt="free" width="500">
  </figure>
 </p>
@@ -575,7 +575,7 @@ After getting the chunk , i wrote the address of <code>system</code> in <code>__
 </span></span></code></pre></td></tr></table>
 </div>
 </div><h2 id="result">Result
-</h2><figure><img src="/blog/post/nullcon-2025-chunkythreads/flag.png"
+</h2><figure><img src="/blog/post/nullcon-2025-fotispy6/flag.png"
     alt="flag" width="500">
 </figure>
 
@@ -608,6 +608,19 @@ After getting the chunk , i wrote the address of <code>system</code> in <code>__
     <h2 class="section-title">Related content</h2>
     <div class="related-content">
         <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/blog/post/byu-2026-heap2win/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">ByuCTF 2026 - Heap2Win</h2>
+        </div>
+    </a>
+</article>
+
             
                 
 <article class="">
@@ -661,7 +674,7 @@ After getting the chunk , i wrote the address of <code>system</code> in <code>__
     <section class="copyright">
         &copy; 
         
-        2025 Velobobo&#39;s Blog
+        2026 Velobobo&#39;s Blog
     </section>
     
     <section class="powerby">

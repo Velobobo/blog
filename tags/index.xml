@@ -6,10 +6,18 @@
         <description>Recent content in Tags on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 11 Jun 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Cpp</title>
+        <link>https://velobobo.github.io/blog/tags/cpp/</link>
+        <pubDate>Thu, 11 Jun 2026 00:00:00 +0000</pubDate>
+        
+        <guid>https://velobobo.github.io/blog/tags/cpp/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Ctf</title>
         <link>https://velobobo.github.io/blog/tags/ctf/</link>
-        <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
+        <pubDate>Thu, 11 Jun 2026 00:00:00 +0000</pubDate>
         
         <guid>https://velobobo.github.io/blog/tags/ctf/</guid>
         <description></description>
@@ -17,7 +25,7 @@
         <item>
         <title>Heap</title>
         <link>https://velobobo.github.io/blog/tags/heap/</link>
-        <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
+        <pubDate>Thu, 11 Jun 2026 00:00:00 +0000</pubDate>
         
         <guid>https://velobobo.github.io/blog/tags/heap/</guid>
         <description></description>
