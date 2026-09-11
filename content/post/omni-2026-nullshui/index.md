@@ -16,7 +16,7 @@ categories = ["pwn"]
 
 ## Overview 
 
-Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.
+Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.
 
 At first glance, this challenge doesn't look particularly exciting.  
 We have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once. 
@@ -33,11 +33,11 @@ you can grab the challenge files from [here](https://github.com/OmniCTF/nullshui
 
 ```
 
-The binary is about as hardened as you would expect: Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp  
+The binary is about as hardened as you would expect: `Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp  `
 
-The seccomp filter blocks execve and execveat, so even if we eventually get control of RIP, the usual system("/bin/sh") route isn't going to work.  
-There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement an ROP to read the flag file.  
-The interesting primitive here is the one-time heap NULL write. On its own, it doesn't look particularly powerful. But it turns out it kinda is , This is where largebins come into the picture.
+The seccomp filter blocks `execve` and `execveat`, so even if we eventually get control of RIP, the usual system("/bin/sh") route isn't going to work.  
+There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement ROP to read the flag file.  
+The interesting primitive here is the one-time heap NULL write. On its own, it doesn't look particularly powerful. But it turns out it kinda is , This is where `largebins` come into the picture.
 
 The final exploit chains together several different ideas:
 
@@ -84,9 +84,9 @@ alloc(7, 0x400, b"F")
 
 The two guard chunks aren't there just for decoration. When I eventually free P and Q, I don't want them to merge with their neighbours through heap consolidation, so the guards keep the chunks isolated.
 
-There's another important detail here, all chunks except F have a user-requested size larger than the maximum tcache request (0x408). Therefore, when freed, `P` and `Q` won't end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.
+There's another important detail here, all chunks except `F` have a user-requested size larger than the maximum tcache request `(0x408)`. Therefore, when freed, `P` and `Q` won't end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.
 
-`F`, on the other hand, is intentionally 0x400. I'll leave that one alone for now , it will become useful later when we start messing with tcache.
+`F`, on the other hand, is intentionally `0x400`. I'll leave that one alone for now , it will become useful later when we start messing with tcache.
 
 
 
@@ -100,7 +100,7 @@ alloc(5, 0x1000, b"sort chunks in largebin")
 
 
 Freeing `P` and `Q` initially puts them into the unsorted bin.  
-The large allocation forces malloc to process the unsorted bin. Since P and Q are too large for the smallbins, they are sorted into the appropriate largebin.  
+The large allocation forces malloc to process the unsorted bin. Since `P` and `Q` are too large for the smallbins, they are sorted into the appropriate largebin.  
 This is useful because a freed largebin chunk contains considerably more interesting metadata than an allocated chunk.
 
 A largebin chunk looks roughly like:
@@ -144,27 +144,19 @@ alloc(10, 0x600, b"put P in largebin")
 
 ```
 
-
-
 ## Largebin Corruption
-
-
 
 We now have everything needed to start exploiting the allocator. But before touching `zero()`, we need to understand one slightly unusual part of largebins: the `fd_nextsize / bk_nextsize` pointers.
 
-Apart from the usual doubly linked list using fd,bk , the largebins also maintains another doubly linked list using fdnextsize,bknextsize which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.
+Apart from the usual doubly linked list using `fd,bk` , the largebins also maintains another doubly linked list using `fdnextsize,bknextsize` which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.
 
 
-
-In our case, Q is larger than P, so following `Q->fd_nextsize` eventually leads us towards the smaller chunk P.
+In our case, `Q` is larger than `P`, so following `Q->fd_nextsize` eventually leads us towards the smaller chunk `P`.
 
 The doubly-linkedlist for (fd,bk) pair is like `binhead --> Q-->P-->binhead` and for (fdnextsize,bknextsize) pair is like `Q-->P`
 
 
-
 Now what happens if we use the heap NULL write primitive to null out this `P->fdnextsize` and remove chunk `P` from largebin by allocating it?
-
-
 
 When malloc takes a chunk out of a bin, it eventually calls `unlink_chunk()`
 
@@ -192,7 +184,7 @@ if (!in_smallbin_range (chunksize_nomask (p)) && p->fd_nextsize != NULL){
 
 The interesting detail is the condition: `p->fd_nextsize != NULL`  
 If `P->fd_nextsize` is a valid pointer, glibc performs the normal `fd_nextsize / bk_nextsize` unlinking as well.  
-But we have just changed it to NULL.
+But we have just changed it to `NULL`.
 
 
 
@@ -219,7 +211,7 @@ free(0) # consolidate 0,1  merging A,P
 
 ```
 
-Notice i wrote `pheader` into `fd,bk` pointers of the chunk `P` after allocting it once thats because when i try to allocate it again and glibc calls `unlink_chunk()` again on P , it needs to pass the check `fd->bk == p , bk->fd == p` otherwise `unlink_chunk()` will throw an error.  
+Notice i wrote `pheader` into `fd,bk` pointers of the chunk `P` after allocting it once thats because when i try to allocate it again and glibc calls `unlink_chunk()` again on `P` , it needs to pass the check `fd->bk == p , bk->fd == p` otherwise `unlink_chunk()` will throw an error.  
 
 next we free chunk `A,P` which makes them consolidate in the heap .This newly consolidated chunk covers the memory where `P` used to live.
 
@@ -260,12 +252,12 @@ alloc(11,0x400,stdout_payload) # Alloc _IO_2_1_stout_
 
 We are trying to malloc `_IO_2_1_stdout_` because that way we can perform FSOP which leads us to control flow hijacking.
 
-As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk's memory to place our ROP chain and the string "flag.txt" in it.
+As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk's memory to place our ROP chain and the string `"flag.txt"` in it.
 
 
 ## FSOP - House of Apple 2 | setcontext | ROP
 
-There are plenty of other good blogs which explain house of apple 2 so i am not gonna explain it (ps i am tired of writing this post)
+There are plenty of other good blogs which explain `house of apple 2` so i am not gonna explain it (ps i am tired of writing this post)
 
 ```python
 def construct_stdout_payload():
@@ -298,9 +290,9 @@ alloc(11,0x400,stdout_payload) # Alloc _IO_2_1_stout_
 ```
 
 
-Recall because of seccomp we couldnt do the usual `system(/bin/sh)` otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use `setcontext` which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.
+Recall because of `seccomp` we couldnt do the usual `system(/bin/sh)` otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use `setcontext` which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.
 
-From the assembly dump of `setcontext` function we see that `+0xa8` is the offset for `rip` and `+0x78` is the offset for `rbp` in the `ucontext_t` argument that `setcontext` needs. so we setup the payload according to that and choose `rip=leave;ret` and `rbp=rop_start_addr-0x8` which will stack pivot to our rop chain
+From the assembly dump of `setcontext` function we see that `+0xa8` is the offset for `rip` and `+0x78` is the offset for `rbp` in the `ucontext_t *` argument that `setcontext` needs. so we setup the payload according to that and choose `rip=leave;ret` and `rbp=rop_start_addr-0x8` which will stack pivot to our rop chain
 
 ```python
 def construct_rop_chain(rop_start_addr):
@@ -340,7 +332,7 @@ omniCTF{DEMO_FLAG}
 ```
 
 At last a small debugging detour    
-At first i was trying to call libc `open()` wrapper in the rop but due to my string "flag.txt" being just below the rop chain it was being overwritten by the newly created stack frame of `open()` so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.
+At first i was trying to call libc `open()` wrapper in the rop but due to my string `"flag.txt"` being just below the rop chain it was being overwritten by the newly created stack frame of `open()` so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.
 
 You can find the full exploit script [here](https://github.com/Velobobo/ctf-writeups/blob/main/Omnictf-2026/nullshui/solve.py)
 
