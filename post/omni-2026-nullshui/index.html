@@ -564,7 +564,7 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </div><p>We are trying to malloc <code>_IO_2_1_stdout_</code> because that way we can perform FSOP which leads us to control flow hijacking.</p>
 <p>As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&rsquo;s memory to place our ROP chain and the string <code>&quot;flag.txt&quot;</code> in it.</p>
 <h2 id="fsop---house-of-apple-2--setcontext--rop">FSOP - House of Apple 2 | setcontext | ROP
-</h2><p>Now we have control over <code>_IO_2_1_stout_</code> which is a glibc <code>FILE</code> structue
+</h2><p>Now we have control over <code>_IO_2_1_stout_</code> which is a glibc <code>FILE</code> structure.<br>
 There are plenty of other good blogs which explain <code>house of apple 2</code> so i am not gonna explain it (ps i am tired of writing this post)<br>
 I will just explain the basic idea<br>
 We setup the <code>stdout</code> FILE struct such that when stdout will try to print something it will trigger this chain
