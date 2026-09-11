@@ -310,7 +310,7 @@
 
 
                 <time class="article-time--reading">
-                    9 minute read
+                    10 minute read
                 </time>
             </div>
         
@@ -564,7 +564,13 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </div><p>We are trying to malloc <code>_IO_2_1_stdout_</code> because that way we can perform FSOP which leads us to control flow hijacking.</p>
 <p>As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&rsquo;s memory to place our ROP chain and the string <code>&quot;flag.txt&quot;</code> in it.</p>
 <h2 id="fsop---house-of-apple-2--setcontext--rop">FSOP - House of Apple 2 | setcontext | ROP
-</h2><p>There are plenty of other good blogs which explain <code>house of apple 2</code> so i am not gonna explain it (ps i am tired of writing this post)</p>
+</h2><p>Now we have control over <code>_IO_2_1_stout_</code> which is a glibc <code>FILE</code> structue
+There are plenty of other good blogs which explain <code>house of apple 2</code> so i am not gonna explain it (ps i am tired of writing this post)<br>
+I will just explain the basic idea<br>
+We setup the <code>stdout</code> FILE struct such that when stdout will try to print something it will trigger this chain
+<code>_IO_wfile_overflow(fp)</code> &ndash;&gt; <code>_IO_wdoallocbuf(fp)</code> &ndash;&gt; <code>_IO_WDOALLOCATE(fp)</code> &ndash;&gt; <code>*(fp-&gt;_wide_data-&gt;_wide_vtable+0x68)(fp)</code></p>
+<p>For full explanation on how house of apple 2 works you can read this blog <a class="link" href="https://www.roderickchan.cn/house-of-apple-%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84glibc%E4%B8%ADio%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95-2/"  target="_blank" rel="noopener"
+    >Roderick chan&rsquo;s Blog</a></p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -663,7 +669,8 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">payload</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Now to trigger the payload we needn&rsquo;t call <code>exit()</code> as <code>stdout</code> will try to output something after our input so <code>_IO_wfile_overflow</code> will get called internally which will trigger our exploit.</p>
+</div><p>Calling <code>open(&quot;flag.txt&quot;,0,0)</code> , <code>sendfile(1,3,0,100)</code> through the rop chain to print the flag</p>
+<p>Now to trigger the payload we needn&rsquo;t call <code>exit()</code> as <code>stdout</code> will try to output something after our input so <code>_IO_wfile_overflow</code> will get called internally which will trigger our exploit.</p>
 <h2 id="end">END
 </h2><div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
