@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
 <title>OmniCTF 2026 - Nullshui</title>
 
 <link rel='canonical' href='https://velobobo.github.io/blog/post/omni-2026-nullshui/'>
 
 <link rel="stylesheet" href="/blog/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="OmniCTF 2026 - Nullshui">
-<meta property='og:description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+<meta property='og:description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
 <meta property='og:url' content='https://velobobo.github.io/blog/post/omni-2026-nullshui/'>
 <meta property='og:site_name' content='Velobobo&#39;s Blog'>
 <meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='heap' /><meta property='article:tag' content='fsop' /><meta property='article:tag' content='ctf' /><meta property='article:published_time' content='2026-09-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-09-10T00:00:00&#43;00:00'/>
 <meta name="twitter:title" content="OmniCTF 2026 - Nullshui">
-<meta name="twitter:description" content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+<meta name="twitter:description" content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
     <link rel="shortcut icon" href="/avatar-favicon.png" />
 
     </head>
@@ -327,7 +327,7 @@
     
     <h1 id="nullshui---omni-ctf-2026">Nullshui - Omni CTF 2026
 </h1><h2 id="overview">Overview
-</h2><p>Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.</p>
+</h2><p>Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.</p>
 <p>At first glance, this challenge doesn&rsquo;t look particularly exciting.<br>
 We have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.</p>
 <p>you can grab the challenge files from <a class="link" href="https://github.com/OmniCTF/nullshui"  target="_blank" rel="noopener"
@@ -338,10 +338,10 @@ We have a fairly standard heap interface: allocate, free, view, and one operatio
 </span></span><span class="line"><span class="cl"><span class="mf">4.</span> <span class="n">zero</span>
 </span></span><span class="line"><span class="cl"><span class="mf">5.</span> <span class="n">exit</span>
 </span></span><span class="line"><span class="cl"><span class="o">&gt;</span> 
-</span></span></code></pre></div><p>The binary is about as hardened as you would expect: Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp</p>
-<p>The seccomp filter blocks execve and execveat, so even if we eventually get control of RIP, the usual system(&quot;/bin/sh&quot;) route isn&rsquo;t going to work.<br>
-There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement an ROP to read the flag file.<br>
-The interesting primitive here is the one-time heap NULL write. On its own, it doesn&rsquo;t look particularly powerful. But it turns out it kinda is , This is where largebins come into the picture.</p>
+</span></span></code></pre></div><p>The binary is about as hardened as you would expect: <code>Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp  </code></p>
+<p>The seccomp filter blocks <code>execve</code> and <code>execveat</code>, so even if we eventually get control of RIP, the usual system(&quot;/bin/sh&quot;) route isn&rsquo;t going to work.<br>
+There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement ROP to read the flag file.<br>
+The interesting primitive here is the one-time heap NULL write. On its own, it doesn&rsquo;t look particularly powerful. But it turns out it kinda is , This is where <code>largebins</code> come into the picture.</p>
 <p>The final exploit chains together several different ideas:</p>
 <p>libc leak , heap leak<br>
 ↓<br>
@@ -372,8 +372,8 @@ Since PIE and ASLR are enabled, we&rsquo;ll eventually need both a libc leak and
 </span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;Guard&#34;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mh">0x400</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;F&#34;</span><span class="p">)</span>
 </span></span></code></pre></div><p>The two guard chunks aren&rsquo;t there just for decoration. When I eventually free P and Q, I don&rsquo;t want them to merge with their neighbours through heap consolidation, so the guards keep the chunks isolated.</p>
-<p>There&rsquo;s another important detail here, all chunks except F have a user-requested size larger than the maximum tcache request (0x408). Therefore, when freed, <code>P</code> and <code>Q</code> won&rsquo;t end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.</p>
-<p><code>F</code>, on the other hand, is intentionally 0x400. I&rsquo;ll leave that one alone for now , it will become useful later when we start messing with tcache.</p>
+<p>There&rsquo;s another important detail here, all chunks except <code>F</code> have a user-requested size larger than the maximum tcache request <code>(0x408)</code>. Therefore, when freed, <code>P</code> and <code>Q</code> won&rsquo;t end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.</p>
+<p><code>F</code>, on the other hand, is intentionally <code>0x400</code>. I&rsquo;ll leave that one alone for now , it will become useful later when we start messing with tcache.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -387,7 +387,7 @@ Since PIE and ASLR are enabled, we&rsquo;ll eventually need both a libc leak and
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>Freeing <code>P</code> and <code>Q</code> initially puts them into the unsorted bin.<br>
-The large allocation forces malloc to process the unsorted bin. Since P and Q are too large for the smallbins, they are sorted into the appropriate largebin.<br>
+The large allocation forces malloc to process the unsorted bin. Since <code>P</code> and <code>Q</code> are too large for the smallbins, they are sorted into the appropriate largebin.<br>
 This is useful because a freed largebin chunk contains considerably more interesting metadata than an allocated chunk.</p>
 <p>A largebin chunk looks roughly like:</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">prev</span><span class="o">-</span><span class="n">size</span> <span class="o">|</span> <span class="n">size</span> <span class="o">|</span> <span class="n">fd</span> <span class="o">|</span> <span class="n">bk</span> <span class="o">|</span> <span class="n">fdnextsize</span> <span class="o">|</span> <span class="n">bknextsize</span>
@@ -440,8 +440,8 @@ This is useful because a freed largebin chunk contains considerably more interes
 </div>
 </div><h2 id="largebin-corruption">Largebin Corruption
 </h2><p>We now have everything needed to start exploiting the allocator. But before touching <code>zero()</code>, we need to understand one slightly unusual part of largebins: the <code>fd_nextsize / bk_nextsize</code> pointers.</p>
-<p>Apart from the usual doubly linked list using fd,bk , the largebins also maintains another doubly linked list using fdnextsize,bknextsize which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.</p>
-<p>In our case, Q is larger than P, so following <code>Q-&gt;fd_nextsize</code> eventually leads us towards the smaller chunk P.</p>
+<p>Apart from the usual doubly linked list using <code>fd,bk</code> , the largebins also maintains another doubly linked list using <code>fdnextsize,bknextsize</code> which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.</p>
+<p>In our case, <code>Q</code> is larger than <code>P</code>, so following <code>Q-&gt;fd_nextsize</code> eventually leads us towards the smaller chunk <code>P</code>.</p>
 <p>The doubly-linkedlist for (fd,bk) pair is like <code>binhead --&gt; Q--&gt;P--&gt;binhead</code> and for (fdnextsize,bknextsize) pair is like <code>Q--&gt;P</code></p>
 <p>Now what happens if we use the heap NULL write primitive to null out this <code>P-&gt;fdnextsize</code> and remove chunk <code>P</code> from largebin by allocating it?</p>
 <p>When malloc takes a chunk out of a bin, it eventually calls <code>unlink_chunk()</code></p>
@@ -483,7 +483,7 @@ This is useful because a freed largebin chunk contains considerably more interes
 </div>
 </div><p>The interesting detail is the condition: <code>p-&gt;fd_nextsize != NULL</code><br>
 If <code>P-&gt;fd_nextsize</code> is a valid pointer, glibc performs the normal <code>fd_nextsize / bk_nextsize</code> unlinking as well.<br>
-But we have just changed it to NULL.</p>
+But we have just changed it to <code>NULL</code>.</p>
 <p>So when <code>unlink_chunk(P)</code> runs, glibc only unlinks the chunk from the (fd,bk) list but not from (fdnextsize,bknextsize) list
 so after <code>unlink_chunk</code> is called on chunk <code>P</code> , Q&rsquo;s fdnextsize still points to P. the largebin state is like this</p>
 <p>(fd,bk) : <code>binhead--&gt;Q--&gt;binhead</code><br>
@@ -513,7 +513,7 @@ so after <code>unlink_chunk</code> is called on chunk <code>P</code> , Q&rsquo;s
 </span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># consolidate 0,1  merging A,P</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Notice i wrote <code>pheader</code> into <code>fd,bk</code> pointers of the chunk <code>P</code> after allocting it once thats because when i try to allocate it again and glibc calls <code>unlink_chunk()</code> again on P , it needs to pass the check <code>fd-&gt;bk == p , bk-&gt;fd == p</code> otherwise <code>unlink_chunk()</code> will throw an error.</p>
+</div><p>Notice i wrote <code>pheader</code> into <code>fd,bk</code> pointers of the chunk <code>P</code> after allocting it once thats because when i try to allocate it again and glibc calls <code>unlink_chunk()</code> again on <code>P</code> , it needs to pass the check <code>fd-&gt;bk == p , bk-&gt;fd == p</code> otherwise <code>unlink_chunk()</code> will throw an error.</p>
 <p>next we free chunk <code>A,P</code> which makes them consolidate in the heap .This newly consolidated chunk covers the memory where <code>P</code> used to live.</p>
 <h2 id="overlapping-chunks--tcache-poisoning">Overlapping chunks &amp; Tcache Poisoning
 </h2><p>Now that we have two pointers to the same physical chunk, we can finally make the overlap useful.<br>
@@ -562,9 +562,9 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>We are trying to malloc <code>_IO_2_1_stdout_</code> because that way we can perform FSOP which leads us to control flow hijacking.</p>
-<p>As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&rsquo;s memory to place our ROP chain and the string &ldquo;flag.txt&rdquo; in it.</p>
+<p>As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&rsquo;s memory to place our ROP chain and the string <code>&quot;flag.txt&quot;</code> in it.</p>
 <h2 id="fsop---house-of-apple-2--setcontext--rop">FSOP - House of Apple 2 | setcontext | ROP
-</h2><p>There are plenty of other good blogs which explain house of apple 2 so i am not gonna explain it (ps i am tired of writing this post)</p>
+</h2><p>There are plenty of other good blogs which explain <code>house of apple 2</code> so i am not gonna explain it (ps i am tired of writing this post)</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -623,8 +623,8 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mh">0x400</span><span class="p">,</span><span class="n">stdout_payload</span><span class="p">)</span> <span class="c1"># Alloc _IO_2_1_stout_</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>Recall because of seccomp we couldnt do the usual <code>system(/bin/sh)</code> otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use <code>setcontext</code> which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.</p>
-<p>From the assembly dump of <code>setcontext</code> function we see that <code>+0xa8</code> is the offset for <code>rip</code> and <code>+0x78</code> is the offset for <code>rbp</code> in the <code>ucontext_t</code> argument that <code>setcontext</code> needs. so we setup the payload according to that and choose <code>rip=leave;ret</code> and <code>rbp=rop_start_addr-0x8</code> which will stack pivot to our rop chain</p>
+</div><p>Recall because of <code>seccomp</code> we couldnt do the usual <code>system(/bin/sh)</code> otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use <code>setcontext</code> which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.</p>
+<p>From the assembly dump of <code>setcontext</code> function we see that <code>+0xa8</code> is the offset for <code>rip</code> and <code>+0x78</code> is the offset for <code>rbp</code> in the <code>ucontext_t *</code> argument that <code>setcontext</code> needs. so we setup the payload according to that and choose <code>rip=leave;ret</code> and <code>rbp=rop_start_addr-0x8</code> which will stack pivot to our rop chain</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt"> 1
@@ -690,7 +690,7 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 </span></span></code></pre></td></tr></table>
 </div>
 </div><p>At last a small debugging detour <br>
-At first i was trying to call libc <code>open()</code> wrapper in the rop but due to my string &ldquo;flag.txt&rdquo; being just below the rop chain it was being overwritten by the newly created stack frame of <code>open()</code> so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.</p>
+At first i was trying to call libc <code>open()</code> wrapper in the rop but due to my string <code>&quot;flag.txt&quot;</code> being just below the rop chain it was being overwritten by the newly created stack frame of <code>open()</code> so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.</p>
 <p>You can find the full exploit script <a class="link" href="https://github.com/Velobobo/ctf-writeups/blob/main/Omnictf-2026/nullshui/solve.py"  target="_blank" rel="noopener"
     >here</a></p>
 

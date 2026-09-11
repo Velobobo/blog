@@ -14,7 +14,7 @@
         <guid>https://velobobo.github.io/blog/post/omni-2026-nullshui/</guid>
         <description>&lt;h1 id=&#34;nullshui---omni-ctf-2026&#34;&gt;Nullshui - Omni CTF 2026
 &lt;/h1&gt;&lt;h2 id=&#34;overview&#34;&gt;Overview
-&lt;/h2&gt;&lt;p&gt;Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple primitives together to eventually get code execution, so I thought it deserved a proper writeup.&lt;/p&gt;
 &lt;p&gt;At first glance, this challenge doesn&amp;rsquo;t look particularly exciting.&lt;br&gt;
 We have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.&lt;/p&gt;
 &lt;p&gt;you can grab the challenge files from &lt;a class=&#34;link&#34; href=&#34;https://github.com/OmniCTF/nullshui&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -25,10 +25,10 @@ We have a fairly standard heap interface: allocate, free, view, and one operatio
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;mf&#34;&gt;4.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;zero&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;mf&#34;&gt;5.&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;exit&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt; 
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The binary is about as hardened as you would expect: Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp&lt;/p&gt;
-&lt;p&gt;The seccomp filter blocks execve and execveat, so even if we eventually get control of RIP, the usual system(&amp;quot;/bin/sh&amp;quot;) route isn&amp;rsquo;t going to work.&lt;br&gt;
-There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement an ROP to read the flag file.&lt;br&gt;
-The interesting primitive here is the one-time heap NULL write. On its own, it doesn&amp;rsquo;t look particularly powerful. But it turns out it kinda is , This is where largebins come into the picture.&lt;/p&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The binary is about as hardened as you would expect: &lt;code&gt;Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp  &lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The seccomp filter blocks &lt;code&gt;execve&lt;/code&gt; and &lt;code&gt;execveat&lt;/code&gt;, so even if we eventually get control of RIP, the usual system(&amp;quot;/bin/sh&amp;quot;) route isn&amp;rsquo;t going to work.&lt;br&gt;
+There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement ROP to read the flag file.&lt;br&gt;
+The interesting primitive here is the one-time heap NULL write. On its own, it doesn&amp;rsquo;t look particularly powerful. But it turns out it kinda is , This is where &lt;code&gt;largebins&lt;/code&gt; come into the picture.&lt;/p&gt;
 &lt;p&gt;The final exploit chains together several different ideas:&lt;/p&gt;
 &lt;p&gt;libc leak , heap leak&lt;br&gt;
 ↓&lt;br&gt;
@@ -59,8 +59,8 @@ Since PIE and ASLR are enabled, we&amp;rsquo;ll eventually need both a libc leak
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;alloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mh&#34;&gt;0x100&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Guard&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;alloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mh&#34;&gt;0x400&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;sa&#34;&gt;b&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;F&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The two guard chunks aren&amp;rsquo;t there just for decoration. When I eventually free P and Q, I don&amp;rsquo;t want them to merge with their neighbours through heap consolidation, so the guards keep the chunks isolated.&lt;/p&gt;
-&lt;p&gt;There&amp;rsquo;s another important detail here, all chunks except F have a user-requested size larger than the maximum tcache request (0x408). Therefore, when freed, &lt;code&gt;P&lt;/code&gt; and &lt;code&gt;Q&lt;/code&gt; won&amp;rsquo;t end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.&lt;/p&gt;
-&lt;p&gt;&lt;code&gt;F&lt;/code&gt;, on the other hand, is intentionally 0x400. I&amp;rsquo;ll leave that one alone for now , it will become useful later when we start messing with tcache.&lt;/p&gt;
+&lt;p&gt;There&amp;rsquo;s another important detail here, all chunks except &lt;code&gt;F&lt;/code&gt; have a user-requested size larger than the maximum tcache request &lt;code&gt;(0x408)&lt;/code&gt;. Therefore, when freed, &lt;code&gt;P&lt;/code&gt; and &lt;code&gt;Q&lt;/code&gt; won&amp;rsquo;t end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;F&lt;/code&gt;, on the other hand, is intentionally &lt;code&gt;0x400&lt;/code&gt;. I&amp;rsquo;ll leave that one alone for now , it will become useful later when we start messing with tcache.&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
@@ -74,7 +74,7 @@ Since PIE and ASLR are enabled, we&amp;rsquo;ll eventually need both a libc leak
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;Freeing &lt;code&gt;P&lt;/code&gt; and &lt;code&gt;Q&lt;/code&gt; initially puts them into the unsorted bin.&lt;br&gt;
-The large allocation forces malloc to process the unsorted bin. Since P and Q are too large for the smallbins, they are sorted into the appropriate largebin.&lt;br&gt;
+The large allocation forces malloc to process the unsorted bin. Since &lt;code&gt;P&lt;/code&gt; and &lt;code&gt;Q&lt;/code&gt; are too large for the smallbins, they are sorted into the appropriate largebin.&lt;br&gt;
 This is useful because a freed largebin chunk contains considerably more interesting metadata than an allocated chunk.&lt;/p&gt;
 &lt;p&gt;A largebin chunk looks roughly like:&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;prev&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;size&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;size&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fd&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bk&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fdnextsize&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;bknextsize&lt;/span&gt;
@@ -127,8 +127,8 @@ This is useful because a freed largebin chunk contains considerably more interes
 &lt;/div&gt;
 &lt;/div&gt;&lt;h2 id=&#34;largebin-corruption&#34;&gt;Largebin Corruption
 &lt;/h2&gt;&lt;p&gt;We now have everything needed to start exploiting the allocator. But before touching &lt;code&gt;zero()&lt;/code&gt;, we need to understand one slightly unusual part of largebins: the &lt;code&gt;fd_nextsize / bk_nextsize&lt;/code&gt; pointers.&lt;/p&gt;
-&lt;p&gt;Apart from the usual doubly linked list using fd,bk , the largebins also maintains another doubly linked list using fdnextsize,bknextsize which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.&lt;/p&gt;
-&lt;p&gt;In our case, Q is larger than P, so following &lt;code&gt;Q-&amp;gt;fd_nextsize&lt;/code&gt; eventually leads us towards the smaller chunk P.&lt;/p&gt;
+&lt;p&gt;Apart from the usual doubly linked list using &lt;code&gt;fd,bk&lt;/code&gt; , the largebins also maintains another doubly linked list using &lt;code&gt;fdnextsize,bknextsize&lt;/code&gt; which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.&lt;/p&gt;
+&lt;p&gt;In our case, &lt;code&gt;Q&lt;/code&gt; is larger than &lt;code&gt;P&lt;/code&gt;, so following &lt;code&gt;Q-&amp;gt;fd_nextsize&lt;/code&gt; eventually leads us towards the smaller chunk &lt;code&gt;P&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;The doubly-linkedlist for (fd,bk) pair is like &lt;code&gt;binhead --&amp;gt; Q--&amp;gt;P--&amp;gt;binhead&lt;/code&gt; and for (fdnextsize,bknextsize) pair is like &lt;code&gt;Q--&amp;gt;P&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Now what happens if we use the heap NULL write primitive to null out this &lt;code&gt;P-&amp;gt;fdnextsize&lt;/code&gt; and remove chunk &lt;code&gt;P&lt;/code&gt; from largebin by allocating it?&lt;/p&gt;
 &lt;p&gt;When malloc takes a chunk out of a bin, it eventually calls &lt;code&gt;unlink_chunk()&lt;/code&gt;&lt;/p&gt;
@@ -170,7 +170,7 @@ This is useful because a freed largebin chunk contains considerably more interes
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;The interesting detail is the condition: &lt;code&gt;p-&amp;gt;fd_nextsize != NULL&lt;/code&gt;&lt;br&gt;
 If &lt;code&gt;P-&amp;gt;fd_nextsize&lt;/code&gt; is a valid pointer, glibc performs the normal &lt;code&gt;fd_nextsize / bk_nextsize&lt;/code&gt; unlinking as well.&lt;br&gt;
-But we have just changed it to NULL.&lt;/p&gt;
+But we have just changed it to &lt;code&gt;NULL&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;So when &lt;code&gt;unlink_chunk(P)&lt;/code&gt; runs, glibc only unlinks the chunk from the (fd,bk) list but not from (fdnextsize,bknextsize) list
 so after &lt;code&gt;unlink_chunk&lt;/code&gt; is called on chunk &lt;code&gt;P&lt;/code&gt; , Q&amp;rsquo;s fdnextsize still points to P. the largebin state is like this&lt;/p&gt;
 &lt;p&gt;(fd,bk) : &lt;code&gt;binhead--&amp;gt;Q--&amp;gt;binhead&lt;/code&gt;&lt;br&gt;
@@ -200,7 +200,7 @@ so after &lt;code&gt;unlink_chunk&lt;/code&gt; is called on chunk &lt;code&gt;P&
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;free&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# consolidate 0,1  merging A,P&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;Notice i wrote &lt;code&gt;pheader&lt;/code&gt; into &lt;code&gt;fd,bk&lt;/code&gt; pointers of the chunk &lt;code&gt;P&lt;/code&gt; after allocting it once thats because when i try to allocate it again and glibc calls &lt;code&gt;unlink_chunk()&lt;/code&gt; again on P , it needs to pass the check &lt;code&gt;fd-&amp;gt;bk == p , bk-&amp;gt;fd == p&lt;/code&gt; otherwise &lt;code&gt;unlink_chunk()&lt;/code&gt; will throw an error.&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;Notice i wrote &lt;code&gt;pheader&lt;/code&gt; into &lt;code&gt;fd,bk&lt;/code&gt; pointers of the chunk &lt;code&gt;P&lt;/code&gt; after allocting it once thats because when i try to allocate it again and glibc calls &lt;code&gt;unlink_chunk()&lt;/code&gt; again on &lt;code&gt;P&lt;/code&gt; , it needs to pass the check &lt;code&gt;fd-&amp;gt;bk == p , bk-&amp;gt;fd == p&lt;/code&gt; otherwise &lt;code&gt;unlink_chunk()&lt;/code&gt; will throw an error.&lt;/p&gt;
 &lt;p&gt;next we free chunk &lt;code&gt;A,P&lt;/code&gt; which makes them consolidate in the heap .This newly consolidated chunk covers the memory where &lt;code&gt;P&lt;/code&gt; used to live.&lt;/p&gt;
 &lt;h2 id=&#34;overlapping-chunks--tcache-poisoning&#34;&gt;Overlapping chunks &amp;amp; Tcache Poisoning
 &lt;/h2&gt;&lt;p&gt;Now that we have two pointers to the same physical chunk, we can finally make the overlap useful.&lt;br&gt;
@@ -249,9 +249,9 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;We are trying to malloc &lt;code&gt;_IO_2_1_stdout_&lt;/code&gt; because that way we can perform FSOP which leads us to control flow hijacking.&lt;/p&gt;
-&lt;p&gt;As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&amp;rsquo;s memory to place our ROP chain and the string &amp;ldquo;flag.txt&amp;rdquo; in it.&lt;/p&gt;
+&lt;p&gt;As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&amp;rsquo;s memory to place our ROP chain and the string &lt;code&gt;&amp;quot;flag.txt&amp;quot;&lt;/code&gt; in it.&lt;/p&gt;
 &lt;h2 id=&#34;fsop---house-of-apple-2--setcontext--rop&#34;&gt;FSOP - House of Apple 2 | setcontext | ROP
-&lt;/h2&gt;&lt;p&gt;There are plenty of other good blogs which explain house of apple 2 so i am not gonna explain it (ps i am tired of writing this post)&lt;/p&gt;
+&lt;/h2&gt;&lt;p&gt;There are plenty of other good blogs which explain &lt;code&gt;house of apple 2&lt;/code&gt; so i am not gonna explain it (ps i am tired of writing this post)&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -310,8 +310,8 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;alloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;mh&#34;&gt;0x400&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;stdout_payload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;# Alloc _IO_2_1_stout_&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;&lt;p&gt;Recall because of seccomp we couldnt do the usual &lt;code&gt;system(/bin/sh)&lt;/code&gt; otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use &lt;code&gt;setcontext&lt;/code&gt; which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.&lt;/p&gt;
-&lt;p&gt;From the assembly dump of &lt;code&gt;setcontext&lt;/code&gt; function we see that &lt;code&gt;+0xa8&lt;/code&gt; is the offset for &lt;code&gt;rip&lt;/code&gt; and &lt;code&gt;+0x78&lt;/code&gt; is the offset for &lt;code&gt;rbp&lt;/code&gt; in the &lt;code&gt;ucontext_t&lt;/code&gt; argument that &lt;code&gt;setcontext&lt;/code&gt; needs. so we setup the payload according to that and choose &lt;code&gt;rip=leave;ret&lt;/code&gt; and &lt;code&gt;rbp=rop_start_addr-0x8&lt;/code&gt; which will stack pivot to our rop chain&lt;/p&gt;
+&lt;/div&gt;&lt;p&gt;Recall because of &lt;code&gt;seccomp&lt;/code&gt; we couldnt do the usual &lt;code&gt;system(/bin/sh)&lt;/code&gt; otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use &lt;code&gt;setcontext&lt;/code&gt; which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.&lt;/p&gt;
+&lt;p&gt;From the assembly dump of &lt;code&gt;setcontext&lt;/code&gt; function we see that &lt;code&gt;+0xa8&lt;/code&gt; is the offset for &lt;code&gt;rip&lt;/code&gt; and &lt;code&gt;+0x78&lt;/code&gt; is the offset for &lt;code&gt;rbp&lt;/code&gt; in the &lt;code&gt;ucontext_t *&lt;/code&gt; argument that &lt;code&gt;setcontext&lt;/code&gt; needs. so we setup the payload according to that and choose &lt;code&gt;rip=leave;ret&lt;/code&gt; and &lt;code&gt;rbp=rop_start_addr-0x8&lt;/code&gt; which will stack pivot to our rop chain&lt;/p&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
 &lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
@@ -377,7 +377,7 @@ Since we can now control the entire consolidated chunk, we can write a fake chun
 &lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;At last a small debugging detour &lt;br&gt;
-At first i was trying to call libc &lt;code&gt;open()&lt;/code&gt; wrapper in the rop but due to my string &amp;ldquo;flag.txt&amp;rdquo; being just below the rop chain it was being overwritten by the newly created stack frame of &lt;code&gt;open()&lt;/code&gt; so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.&lt;/p&gt;
+At first i was trying to call libc &lt;code&gt;open()&lt;/code&gt; wrapper in the rop but due to my string &lt;code&gt;&amp;quot;flag.txt&amp;quot;&lt;/code&gt; being just below the rop chain it was being overwritten by the newly created stack frame of &lt;code&gt;open()&lt;/code&gt; so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.&lt;/p&gt;
 &lt;p&gt;You can find the full exploit script &lt;a class=&#34;link&#34; href=&#34;https://github.com/Velobobo/ctf-writeups/blob/main/Omnictf-2026/nullshui/solve.py&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;here&lt;/a&gt;&lt;/p&gt;
 </description>
