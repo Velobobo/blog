@@ -257,7 +257,13 @@ As we know the heap_base we can calc the addresses of the data we setup at the h
 
 ## FSOP - House of Apple 2 | setcontext | ROP
 
-There are plenty of other good blogs which explain `house of apple 2` so i am not gonna explain it (ps i am tired of writing this post)
+Now we have control over `_IO_2_1_stout_` which is a glibc `FILE` structue
+There are plenty of other good blogs which explain `house of apple 2` so i am not gonna explain it (ps i am tired of writing this post)  
+I will just explain the basic idea  
+We setup the `stdout` FILE struct such that when stdout will try to print something it will trigger this chain
+`_IO_wfile_overflow(fp)` --> `_IO_wdoallocbuf(fp)` --> `_IO_WDOALLOCATE(fp)` --> `*(fp->_wide_data->_wide_vtable+0x68)(fp)`
+
+For full explanation on how house of apple 2 works you can read this blog [Roderick chan's Blog](https://www.roderickchan.cn/house-of-apple-%E4%B8%80%E7%A7%8D%E6%96%B0%E7%9A%84glibc%E4%B8%ADio%E6%94%BB%E5%87%BB%E6%96%B9%E6%B3%95-2/)
 
 ```python
 def construct_stdout_payload():
@@ -289,7 +295,6 @@ stdout_payload=construct_stdout_payload()
 alloc(11,0x400,stdout_payload) # Alloc _IO_2_1_stout_
 ```
 
-
 Recall because of `seccomp` we couldnt do the usual `system(/bin/sh)` otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use `setcontext` which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.
 
 From the assembly dump of `setcontext` function we see that `+0xa8` is the offset for `rip` and `+0x78` is the offset for `rbp` in the `ucontext_t *` argument that `setcontext` needs. so we setup the payload according to that and choose `rip=leave;ret` and `rbp=rop_start_addr-0x8` which will stack pivot to our rop chain
@@ -312,7 +317,7 @@ def construct_rop_chain(rop_start_addr):
 
    return payload
 ```
-
+Calling `open("flag.txt",0,0)` , `sendfile(1,3,0,100)` through the rop chain to print the flag 
 
 Now to trigger the payload we needn't call `exit()` as `stdout` will try to output something after our input so `_IO_wfile_overflow` will get called internally which will trigger our exploit.
 
