@@ -257,7 +257,7 @@ As we know the heap_base we can calc the addresses of the data we setup at the h
 
 ## FSOP - House of Apple 2 | setcontext | ROP
 
-Now we have control over `_IO_2_1_stout_` which is a glibc `FILE` structue
+Now we have control over `_IO_2_1_stout_` which is a glibc `FILE` structure.  
 There are plenty of other good blogs which explain `house of apple 2` so i am not gonna explain it (ps i am tired of writing this post)  
 I will just explain the basic idea  
 We setup the `stdout` FILE struct such that when stdout will try to print something it will trigger this chain
