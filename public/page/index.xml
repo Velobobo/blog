@@ -2,42 +2,42 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Pages on Velobobo&#39;s Blog</title>
-        <link>https://velobobo.github.io/blog/page/</link>
+        <link>http://localhost:1313/blog/page/</link>
         <description>Recent content in Pages on Velobobo&#39;s Blog</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://velobobo.github.io/blog/page/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 22 Jun 2025 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/blog/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>About</title>
-        <link>https://velobobo.github.io/blog/about/</link>
+        <link>http://localhost:1313/blog/about/</link>
         <pubDate>Sun, 22 Jun 2025 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/about/</guid>
+        <guid>http://localhost:1313/blog/about/</guid>
         <description>&lt;p&gt;i like pwn and rev&lt;br&gt;
 Discord: velobobo&lt;/p&gt;
 </description>
         </item>
         <item>
         <title>Archives</title>
-        <link>https://velobobo.github.io/blog/archives/</link>
+        <link>http://localhost:1313/blog/archives/</link>
         <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/archives/</guid>
+        <guid>http://localhost:1313/blog/archives/</guid>
         <description></description>
         </item>
         <item>
         <title>CTFs</title>
-        <link>https://velobobo.github.io/blog/ctfs/</link>
+        <link>http://localhost:1313/blog/ctfs/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/ctfs/</guid>
+        <guid>http://localhost:1313/blog/ctfs/</guid>
         <description></description>
         </item>
         <item>
         <title>Search</title>
-        <link>https://velobobo.github.io/blog/search/</link>
+        <link>http://localhost:1313/blog/search/</link>
         <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
         
-        <guid>https://velobobo.github.io/blog/search/</guid>
+        <guid>http://localhost:1313/blog/search/</guid>
         <description></description>
         </item>
         
