@@ -196,7 +196,7 @@ so after `unlink_chunk` is called on chunk `P` , Q's fdnextsize still points to 
 
 
 
-Now if we again try to alloc another `0x500` chunk , the request goes to largebin and it checks the size of chunk at head which is `Q` and sees the requested size is smaller so it walks through `Q->fdnextsize` and as it was still pointing to `P` the allocator thinks it found the required chunk and returns the chunk `P` to us. This results in us having the address of chunk `P` in two different slots. 
+Now if we again try to alloc another `0x500` chunk , the request goes to largebin and it checks the size of chunk at head which is `Q` and sees the `chunksize(Q) > requested size` so it walks through `Q->bknextsize` to walk through the chunks from smallest to biggest size to find the most suitable minimum sized chunk which could satisfy the request and as `Q->bknextsize` was still pointing to `P` the allocator thinks it found the required chunk and returns the chunk `P` to us. This results in us having the address of chunk `P` in two different slots. 
 
 ```python
 p_user=heap_base+0x6c0
@@ -283,7 +283,7 @@ fp = flat(
            0xE0: stdout # wide_data->vtable
        },
 
-       filler=b"\\x00",
+       filler=b"\x00",
 
    )
    return bytes(fp)
