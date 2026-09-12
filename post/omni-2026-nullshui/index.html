@@ -488,7 +488,7 @@ But we have just changed it to <code>NULL</code>.</p>
 so after <code>unlink_chunk</code> is called on chunk <code>P</code> , Q&rsquo;s fdnextsize still points to P. the largebin state is like this</p>
 <p>(fd,bk) : <code>binhead--&gt;Q--&gt;binhead</code><br>
 (fdnextsize,bknextsize) : <code>Q--&gt;P</code></p>
-<p>Now if we again try to alloc another <code>0x500</code> chunk , the request goes to largebin and it checks the size of chunk at head which is <code>Q</code> and sees the requested size is smaller so it walks through <code>Q-&gt;fdnextsize</code> and as it was still pointing to <code>P</code> the allocator thinks it found the required chunk and returns the chunk <code>P</code> to us. This results in us having the address of chunk <code>P</code> in two different slots.</p>
+<p>Now if we again try to alloc another <code>0x500</code> chunk , the request goes to largebin and it checks the size of chunk at head which is <code>Q</code> and sees the <code>chunksize(Q) &gt; requested size</code> so it walks through <code>Q-&gt;bknextsize</code> to walk through the chunks from smallest to biggest size to find the most suitable minimum sized chunk which could satisfy the request and as <code>Q-&gt;bknextsize</code> was still pointing to <code>P</code> the allocator thinks it found the required chunk and returns the chunk <code>P</code> to us. This results in us having the address of chunk <code>P</code> in two different slots.</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
 <pre tabindex="0" class="chroma"><code><span class="lnt">1
@@ -613,7 +613,7 @@ We setup the <code>stdout</code> FILE struct such that when stdout will try to p
 </span></span><span class="line"><span class="cl">           <span class="mh">0xE0</span><span class="p">:</span> <span class="n">stdout</span> <span class="c1"># wide_data-&gt;vtable</span>
 </span></span><span class="line"><span class="cl">       <span class="p">},</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">       <span class="n">filler</span><span class="o">=</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\\</span><span class="s2">x00&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">       <span class="n">filler</span><span class="o">=</span><span class="sa">b</span><span class="s2">&#34;</span><span class="se">\x00</span><span class="s2">&#34;</span><span class="p">,</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">   <span class="p">)</span>
 </span></span><span class="line"><span class="cl">   <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span>
